@@ -1,0 +1,114 @@
+﻿@page
+@model Kymeta.Cloud.Services.EnterpriseBroker.Pages.IndexModel
+@{
+    ViewBag.Title = "Transactions - Enterprise Broker";
+}
+<div class="section">
+    <div class="container">
+        <h1 class="title">Action Log</h1>
+
+        <table class="table is-fullwidth is-striped">
+            <thead>
+                <tr>
+                    <th style="width: 100px">Object</th>
+                    <th style="width: 150px">User</th>
+                    <th style="width: 225px">Last Updated</th>
+                    <th style="width: 225px">SF ID</th>
+                    <th>SF Name</th>
+                    <th style="width: 80px">OSS Status</th>
+                    <th style="width: 80px">Oracle Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.ActionRecords?.Count() == 0) 
+                {
+                    <tr>
+                        <td colspan="5">
+                            <p class="pa-4">No records found.</p>
+                        </td>
+                    </tr>
+                }
+                @foreach (var log in Model.PagedActionRecords.OrderByDescending(ar => ar.LastUpdatedOn))
+                {
+                    <tr>
+                        <td>
+                            @if (log.Object == ActionObjectType.Account)
+                            {
+                                <i class="fa-regular fa-building"></i>
+                            } else if (log.Object == ActionObjectType.Address)
+                            {
+                                <i class="fa-regular fa-location-dot"></i>    
+                            } else
+                            {
+                                <i class="fa-regular fa-user"></i> 
+                            }
+                            <a asp-page="Detail" asp-route-id="@log.Id" asp-route-objectType="@log.Object">
+                                @log.Object
+                            </a>
+                        </td>
+                        <td>@log.UserName?.Split('@')?.First()</td>
+                        <td>@(log.LastUpdatedOn.HasValue ? @log.LastUpdatedOn.Value.ToString("G") : @log.CreatedOn.ToString("G"))</td>
+                        <td>@log.ObjectId</td>
+                        <td>@log.ObjectName</td>
+                        <td>
+                            @if (log.OssStatus == StatusType.Successful)
+                            {
+                                <span class="has-text-success">@log.OssStatus</span>
+                            } else if (log.OssStatus == StatusType.Error)
+                            {
+                                <span class="has-text-danger">@log.OssStatus</span>
+                            } else if (log.OssStatus == StatusType.Skipped)
+                            {
+                                <span class="has-text-grey-light">@log.OssStatus</span>
+                            } else
+                            {
+                                <span>@log.OssStatus</span>
+                            }
+                        </td>
+                        <td>
+                            @if (log.OracleStatus == StatusType.Successful)
+                            {
+                                <span class="has-text-success">@log.OracleStatus</span>
+                            } else if (log.OracleStatus == StatusType.Error)
+                            {
+                                <span class="has-text-danger">@log.OracleStatus</span>
+                            } else if (log.OracleStatus == StatusType.Skipped)
+                            {
+                                <span class="has-text-grey-light">@log.OracleStatus</span>
+                            } else
+                            {
+                                <span>@log.OracleStatus</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    <a class="button" href="/" @(!Model.HasPreviousPage ? "disabled" : "")>First</a> 
+                </div>
+                <div class="level-item">
+                    <a class="button" href="/?page=@(Model.PageIndex-1)" @(!Model.HasPreviousPage ? "disabled" : "")>
+                        <span class="icon">
+                            <i class="fa-regular fa-chevrons-left"></i>
+                        </span>
+                    </a> 
+                </div>
+            </div>
+            <div class="level-right">
+                <div class="level-item">
+                    <a class="button" href="/?page=@(Model.PageIndex+1)" @(!Model.HasNextPage ? "disabled" : "")>
+                        <span class="icon">
+                            <i class="fa-regular fa-chevrons-right"></i>
+                        </span>
+                    </a> 
+                </div>
+                <div class="level-item">
+                    <a class="button" href="/?page=@(Model.LastPage)" @(!Model.HasNextPage ? "disabled" : "")>Last</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

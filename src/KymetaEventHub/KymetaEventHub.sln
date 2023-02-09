@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KymetaEventHub", "KymetaEventHub\KymetaEventHub.csproj", "{915D81C5-FA53-4476-B752-1598DB02F6B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{915D81C5-FA53-4476-B752-1598DB02F6B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{915D81C5-FA53-4476-B752-1598DB02F6B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{915D81C5-FA53-4476-B752-1598DB02F6B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{915D81C5-FA53-4476-B752-1598DB02F6B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C1CE3CA4-AF33-4DB0-907C-9C15772DA523}
+	EndGlobalSection
+EndGlobal

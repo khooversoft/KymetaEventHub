@@ -1,0 +1,98 @@
+﻿@page "/{objectType}/{id}"
+@model Kymeta.Cloud.Services.EnterpriseBroker.Pages.DetailModel
+@{
+    ViewBag.Title = $"{Model.SalesforceActionTransaction?.ObjectId} ({Model.SalesforceActionTransaction?.CreatedOn.ToString("G")}) - Enterprise Broker";
+}
+
+<div class="section">
+    <div class="container">
+        <h4 title="Transaction Id" class="heading">@Model.SalesforceActionTransaction?.Id</h4>
+        <h1 class="title">@Model.SalesforceActionTransaction?.Object?.ToString() Sync</h1>
+        <p>
+            Initiated
+            <strong>@Model.SalesforceActionTransaction?.CreatedOn.ToString("G")</strong>
+            on object <a href="@Model.SalesforceUrl" target="_blank"><strong>@Model.SalesforceActionTransaction?.ObjectId</strong> <i class="fa-regular fa-arrow-up-right-from-square"></i></a>
+            by <strong>@Model.SalesforceActionTransaction?.UserName</strong>.
+        </p>
+    </div>
+    <hr />
+    <div class="container">
+        <h3 class="is-size-3 mb-3">Activity</h3>
+        @if (Model.SalesforceActionTransaction?.TransactionLog != null)
+        {
+            <table class="table is-fullwidth is-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 200px">Timestamp (UTC)</th>
+                        <th style="width: 250px">Action</th>
+                        <th style="width: 150px">Status</th>
+                        <th>Error Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var txn in Model.SalesforceActionTransaction.TransactionLog.OrderByDescending(ar => ar.Timestamp))
+                    {
+                        <tr>
+                            <td>@txn.Timestamp.GetValueOrDefault().ToString("G")</td>
+                            <td>@txn.Action.ToString()</td>
+                            <td>@txn.Status.ToString()</td>
+                            <td>@txn.ErrorMessage</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No actions to show here.</p>
+        }
+    </div>
+    <hr />
+    <div class="container">
+        <div class="columns">
+            <div class="column is-half">
+                <h3 class="is-size-3 mb-3">Incoming Object</h3>
+                <pre>
+                    @if (!string.IsNullOrEmpty(Model.SerializedTransaction))
+                    {
+
+                        @Model.SerializedTransaction
+                        ;
+                    }
+                </pre>
+            </div>
+            <div class="column is-half">
+                <h3 class="is-size-3 mb-3">Response</h3>
+                <pre>
+                    @if (!string.IsNullOrEmpty(Model.SerializedResponse))
+                    {
+                        @Model.SerializedResponse
+                        ;
+                    }
+                </pre>
+            </div>
+        </div>
+    </div>
+    @if (Model.SalesforceActionTransaction != null)
+    {
+        <hr />
+        <div class="container">
+            <h3 class="is-size-3 mb-3">@Model.SalesforceActionTransaction?.Object?.ToString() in Salesforce</h3>
+            <pre>
+                @if (!string.IsNullOrEmpty(Model.SerializedAccount))
+                {
+                    @Model.SerializedAccount
+                }
+                @if (!string.IsNullOrEmpty(Model.SerializedAddress))
+                {
+                    @Model.SerializedAddress
+                }
+                @if (!string.IsNullOrEmpty(Model.SerializedContact))
+                {
+                    @Model.SerializedContact
+                } 
+                </pre>
+        </div>
+    }
+
+</div>
