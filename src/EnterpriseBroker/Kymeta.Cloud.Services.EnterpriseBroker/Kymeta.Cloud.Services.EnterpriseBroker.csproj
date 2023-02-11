@@ -28,6 +28,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Kymeta.Cloud.Services.EnterpriseBroker.sdk\Kymeta.Cloud.Services.EnterpriseBroker.sdk.csproj" />
+	  <ProjectReference Include="..\Toolbox\Toolbox.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="Certificate.pfx">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>

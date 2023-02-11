@@ -7,9 +7,13 @@ using Kymeta.Cloud.Commons.Databases.Redis;
 using Kymeta.Cloud.Logging;
 using Kymeta.Cloud.Logging.Activity;
 using Kymeta.Cloud.Services.EnterpriseBroker;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
 using Kymeta.Cloud.Services.EnterpriseBroker.Services.BackgroundOperations;
 using Kymeta.Cloud.Services.EnterpriseBroker.Services.BackgroundOperations.PlatformEventListeners;
+using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
@@ -40,19 +44,38 @@ builder.WebHost.UseKestrel(options =>
         }
     }
 });
+
+
 // Setup configuration
+StartupOption startupOption = builder.Configuration
+    .BindToOption<StartupOption>()
+    .Verify();
+
 builder.Configuration.AddGrapevineConfiguration(new GrapevineConfigurationOptions
 {
-    ClientId = builder.Configuration["Configuration:ClientId"],
-    ConfigSourceUrl = builder.Configuration["ServiceHealthUrl"],
-    Secret = builder.Configuration["Configuration:Secret"]
+    ClientId = startupOption.Configuration.ClientId,
+    Secret = startupOption.Configuration.Secret,
+    ConfigSourceUrl = startupOption.ServiceHealthUrl,
 }, new CancellationTokenSource().Token);
+
+ServiceOption serviceOption = builder.Configuration
+    .BindToOption<ServiceOption>()
+    .Verify();
+
+builder.Services.AddSingleton(serviceOption);
+builder.Services.AddEnterpriseBrokerServices();
+builder.Services.AddMemoryCache();
+
+
 if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IsKubernetes")) && Environment.GetEnvironmentVariable("IsKubernetes")?.ToLower() == "true")
 {
     builder.Configuration.AddJsonFile("appsettings.Kube.json", optional: true, reloadOnChange: true);
 }
+
 if (builder.Environment.IsDevelopment()) builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
+
 builder.Configuration.AddEnvironmentVariables();
+
 // Setup logging
 string? instanceId = Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID");
 string pid = String.Format("{0}", Process.GetCurrentProcess().Id);
@@ -75,7 +98,7 @@ builder.Services.AddHttpClient<IActivityLoggerClient, ActivityLoggerClient>();
 builder.Services.AddHttpClient<IFileStorageClient, FileStorageClient>();
 builder.Services.AddHttpClient<IManufacturingProxyClient, ManufacturingProxyClient>();
 builder.Services.AddHttpClient<ISalesforceClient, SalesforceClient>();
-builder.Services.AddCosmosDb(builder.Configuration.GetConnectionString("AzureCosmosDB"));
+builder.Services.AddCosmosDb(serviceOption.ConnectionStrings.AzureCosmosDB);
 builder.Services.AddScoped<IActionsRepository, ActionsRepository>();
 builder.Services.AddScoped<IOssService, OssService>();
 builder.Services.AddScoped<IAccountBrokerService, AccountBrokerService>();
@@ -103,17 +126,18 @@ builder.Services.AddHostedService<SalesforceBackgroundOperationService>();
 builder.Services.AddScoped<ISalesforceProcessingService, SalesforceProcessingService>();
 builder.Services.AddHostedService<OracleBackgroundOperationService>();
 builder.Services.AddScoped<IOracleProcessingService, OracleProcessingService>();
-builder.Services.AddHostedService<SalesforcePlatformEventsBackgroundOperationService>();
-builder.Services.AddSingleton<ISalesforcePlatformEventsProcessingService, SalesforcePlatformEventsProcessingService>();
+//builder.Services.AddHostedService<SalesforcePlatformEventsBackgroundOperationService>();
+//builder.Services.AddSingleton<ISalesforcePlatformEventsProcessingService, SalesforcePlatformEventsProcessingService>();
 #endregion
+
 
 // configure redis
 builder.Services.AddRedisClient(new RedisClientOptions
 {
-    ConnectionString = builder.Configuration.GetConnectionString("RedisCache")
+    ConnectionString = serviceOption.ConnectionStrings.RedisCache,
 });
 // Activity logger
-builder.Services.AddScoped<IActivityLogger>(provider => new ActivityLogger(new ActivityLoggerConfigurationOptions { ConnectionString = builder.Configuration.GetConnectionString("ActivityQueue") }));
+builder.Services.AddScoped<IActivityLogger>(provider => new ActivityLogger(new ActivityLoggerConfigurationOptions { ConnectionString = serviceOption.ConnectionStrings.ActivityQueue }));
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -172,6 +196,13 @@ builder.Services.AddControllers()
 
 // Add Razor Pages
 builder.Services.AddRazorPages();
+
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = HttpLoggingFields.RequestPropertiesAndHeaders |
+                            HttpLoggingFields.RequestBody |
+                            HttpLoggingFields.ResponseBody;
+});
 
 // END: ConfigureServices
 
