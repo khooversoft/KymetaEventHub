@@ -18,10 +18,14 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
 
+[assembly: InternalsVisibleTo("Kymeta.Cloud.Services.EnterpriseBroker.sdk.Test")]
+
 var builder = WebApplication.CreateBuilder(args);
+
 // Default connection limit is 100 seconds, make it a lot longer just in case Oracle sucks
 builder.WebHost.UseKestrel(options =>
 {
@@ -51,6 +55,7 @@ StartupOption startupOption = builder.Configuration
     .BindToOption<StartupOption>()
     .Verify();
 
+
 builder.Configuration.AddGrapevineConfiguration(new GrapevineConfigurationOptions
 {
     ClientId = startupOption.Configuration.ClientId,
@@ -58,13 +63,6 @@ builder.Configuration.AddGrapevineConfiguration(new GrapevineConfigurationOption
     ConfigSourceUrl = startupOption.ServiceHealthUrl,
 }, new CancellationTokenSource().Token);
 
-ServiceOption serviceOption = builder.Configuration
-    .BindToOption<ServiceOption>()
-    .Verify();
-
-builder.Services.AddSingleton(serviceOption);
-builder.Services.AddEnterpriseBrokerServices();
-builder.Services.AddMemoryCache();
 
 
 if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IsKubernetes")) && Environment.GetEnvironmentVariable("IsKubernetes")?.ToLower() == "true")
@@ -75,6 +73,16 @@ if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IsKubernetes")) &&
 if (builder.Environment.IsDevelopment()) builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
 
 builder.Configuration.AddEnvironmentVariables();
+builder.Configuration.AddUserSecrets<Program>();
+
+
+ServiceOption serviceOption = builder.Configuration
+    .BindToOption<ServiceOption>()
+    .Verify();
+
+builder.Services.AddSingleton(serviceOption);
+builder.Services.AddEnterpriseBrokerServices();
+builder.Services.AddMemoryCache();
 
 // Setup logging
 string? instanceId = Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID");
