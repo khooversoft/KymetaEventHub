@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 
+[assembly: InternalsVisibleTo("Kymeta.Cloud.Services.EnterpriseBroker.sdk.Test")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,7 @@ StartupOption startupOption = builder.Configuration
     .BindToOption<StartupOption>()
     .Verify();
 
+
 builder.Configuration.AddGrapevineConfiguration(new GrapevineConfigurationOptions
 {
     ClientId = startupOption.Configuration.ClientId,
@@ -57,13 +59,6 @@ builder.Configuration.AddGrapevineConfiguration(new GrapevineConfigurationOption
     ConfigSourceUrl = startupOption.ServiceHealthUrl,
 }, new CancellationTokenSource().Token);
 
-ServiceOption serviceOption = builder.Configuration
-    .BindToOption<ServiceOption>()
-    .Verify();
-
-builder.Services.AddSingleton(serviceOption);
-builder.Services.AddEnterpriseBrokerServices();
-builder.Services.AddMemoryCache();
 
 
 if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IsKubernetes")) && Environment.GetEnvironmentVariable("IsKubernetes")?.ToLower() == "true")

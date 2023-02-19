@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Xml.Linq;
 using DurableTask.AzureStorage;
 using DurableTask.Core;
+using DurableTask.Emulator;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.WindowsAzure.Storage;
 
@@ -25,14 +26,13 @@ Console.ReadLine();
 
 async Task startAsync(IServiceProvider serviceProvider)
 {
-    CloudStorageAccount storageAccount = CloudStorageAccount.Parse("UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://127.0.0.1;");
-
     var settings = new AzureStorageOrchestrationServiceSettings
     {
         StorageConnectionString = storageHubConnectionString,
     };
 
-    var service = new AzureStorageOrchestrationService(settings);
+    //var service = new AzureStorageOrchestrationService(settings);
+    var service = new LocalOrchestrationService();
 
     TaskHubWorker hubWorker = new TaskHubWorker(service);
     hubWorker.AddTaskOrchestrations(typeof(TestOrchestration));

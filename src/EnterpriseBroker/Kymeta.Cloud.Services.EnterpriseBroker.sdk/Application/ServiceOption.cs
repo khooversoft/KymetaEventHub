@@ -11,6 +11,7 @@ public record ServiceOption
 {
     public ConnectionString ConnectionStrings { get; init; } = null!;
     public SalesforceOption Salesforce { get; init; } = null!;
+    public bool UseDurableTaskEmulator { get; init; } = false;
 }
 
 public record ConnectionString
@@ -18,6 +19,7 @@ public record ConnectionString
     public string AzureCosmosDB { get; init; } = null!;
     public string RedisCache { get; init; } = null!;
     public string ActivityQueue { get; init; } = null!;
+    public string DurableTask { get; init; } = null!;
 }
 
 public record SalesforceOption
@@ -43,6 +45,7 @@ public record PlatformEventsOption
 public record ChannelsOption
 {
     public string Asset { get; init; } = null!;
+    public string NeoApproveOrder { get; init; } = null!;
 }
 
 
@@ -58,6 +61,7 @@ public static class ServiceOptionExtensions
         subject.ConnectionStrings.AzureCosmosDB.NotEmpty(message: msg);
         subject.ConnectionStrings.RedisCache.NotEmpty(message: msg);
         subject.ConnectionStrings.ActivityQueue.NotEmpty(message: msg);
+        if (!subject.UseDurableTaskEmulator) subject.ConnectionStrings.DurableTask.NotEmpty(message: msg);
 
         subject.Salesforce.NotNull(message: msg);
         subject.Salesforce.ConnectedApp.NotNull(message: msg);
@@ -71,6 +75,7 @@ public static class ServiceOptionExtensions
         subject.Salesforce.PlatformEvents.NotNull(message: msg);
         subject.Salesforce.PlatformEvents.Channels.NotNull(message: msg);
         subject.Salesforce.PlatformEvents.Channels.Asset.NotEmpty(message: msg);
+        subject.Salesforce.PlatformEvents.Channels.NeoApproveOrder.NotEmpty(message: msg);
 
         return subject;
     }
