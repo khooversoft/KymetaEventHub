@@ -1,6 +1,7 @@
 ﻿using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -26,6 +27,13 @@ public static class Startup
         services.AddTransient<SalesforceAccessTokenHandler>();
         services.AddSingleton<MessageEventService>();
         services.AddSingleton<ReplayIdStoreService>();
+        services.AddSingleton<SalesforceClient2>();
+
+        services.AddSingleton<EventOrchestrationService>();
+        services.AddSingleton<GetSalesOrderLinesActivity>();
+        services.AddSingleton<SetSalesOrderWithOracleActivity>();
+        services.AddSingleton<UpdateOracleSalesOrderActivity>();
+
         services.AddHostedService<MessageEventBackgroundService>();
 
         services.AddHttpClient<SalesforceAuthClient>((services, httpClient) =>
@@ -35,13 +43,13 @@ public static class Startup
         })
         .AddPolicyHandler(_retryPolicy);
 
-        services.AddHttpClient<SalesforceClient2>((services, httpClient) =>
+        services.AddHttpClient<ISalesforceClient2, SalesforceClient2>((services, httpClient) =>
         {
             var option = services.GetRequiredService<ServiceOption>();
             var authClient = services.GetRequiredService<SalesforceAuthClient>();
 
             var authDetails = authClient.GetAuthToken(CancellationToken.None).Result.NotNull();
-            httpClient.BaseAddress = new Uri(authDetails.InstanceUrl);
+            httpClient.BaseAddress = new Uri(authDetails.InstanceUrl + "/services/data/v56.0");
         })
         .AddPolicyHandler(_retryPolicy)
         .AddHttpMessageHandler<SalesforceAccessTokenHandler>();

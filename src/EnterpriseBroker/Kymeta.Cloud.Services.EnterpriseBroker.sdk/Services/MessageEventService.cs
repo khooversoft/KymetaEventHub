@@ -114,24 +114,16 @@ public class MessageEventService
 
         _logger.LogInformation("BayeuxClient listener running");
         return bayeuxClient;
-
-        // listen for meta connect messages in case of any errors published by Salesforce
-        //IClientSessionChannel metaEventChannel = bayeuxClient.GetChannel("/meta/connect", -1);
-        //metaEventChannel.Subscribe(healthListener);
-        //_logger.LogInformation($"Listening for events from Salesforce on the '{metaEventChannel}' channel...");
-
-        //// fetch replay id from redis to fetch all messages from most recent message processed
-        //var assetReplayId = _cacheRepo.GetSalesforceEventReplayId(_config["Salesforce:PlatformEvents:Channels:Asset"]);
-
-        //// connect to the event channel and add the event listner
-        //IClientSessionChannel assetEventChannel = bayeuxClient.GetChannel($"/event/{_config["Salesforce:PlatformEvents:Channels:Asset"]}", assetReplayId);
-        //assetEventChannel.Subscribe(_assetEventListener);
-        //_logger.LogInformation($"Listening for events from Salesforce on the '{assetEventChannel}' channel...");
-
     }
 
     private void MonitorHealth(ManualResetEventSlim manualSignal, MessageEventContent messageEventContent)
     {
-        if (messageEventContent.Json == "close") manualSignal.Set();
+        _logger.LogInformation("MonitorHealth: messageEvenContent={content}", messageEventContent);
+
+        if (messageEventContent.Json == "close")
+        {
+            _logger.LogWarning("MonitorHealth: received error notification, shutting down listener");
+            manualSignal.Set();
+        }
     }
 }

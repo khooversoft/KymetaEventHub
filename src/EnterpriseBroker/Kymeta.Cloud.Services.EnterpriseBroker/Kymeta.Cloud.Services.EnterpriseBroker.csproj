@@ -9,6 +9,7 @@
 
 		<!-- used for build system, must update -->
 		<VersionPrefix Condition="'$(BUILD_NUMBER)' != ''">1.0.0.$(BUILD_NUMBER)</VersionPrefix>
+		<UserSecretsId>c54f91d8-818d-4a16-a9d6-ff2f4bebe111</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>

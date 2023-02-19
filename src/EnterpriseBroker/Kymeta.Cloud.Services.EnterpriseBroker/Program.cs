@@ -1,5 +1,7 @@
+using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.Json.Serialization;
 using CometD.NetCore.Bayeux.Client;
-using CometD.NetCore.Salesforce;
 using Kymeta.Cloud.Commons.AspNet.ApiVersion;
 using Kymeta.Cloud.Commons.AspNet.DistributedConfig;
 using Kymeta.Cloud.Commons.AspNet.Health;
@@ -15,13 +17,10 @@ using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Default connection limit is 100 seconds, make it a lot longer just in case Oracle sucks
 builder.WebHost.UseKestrel(options =>
 {
@@ -75,6 +74,16 @@ if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IsKubernetes")) &&
 if (builder.Environment.IsDevelopment()) builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true);
 
 builder.Configuration.AddEnvironmentVariables();
+builder.Configuration.AddUserSecrets<Program>();
+
+
+ServiceOption serviceOption = builder.Configuration
+    .BindToOption<ServiceOption>()
+    .Verify();
+
+builder.Services.AddSingleton(serviceOption);
+builder.Services.AddEnterpriseBrokerServices();
+builder.Services.AddMemoryCache();
 
 // Setup logging
 string? instanceId = Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID");
