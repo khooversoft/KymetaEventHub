@@ -4,13 +4,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows;
 
-public class GetSalesOrderLinesActivity : TaskActivity<SalesforceNeoApproveOrderModel, SalesOrderModel>
+/// <summary>
+/// Input: SalesforceNeoApproveOrderModel
+/// Output: SalesOrderModel
+/// </summary>
+public class GetSalesOrderLinesActivity : TaskActivity<string, string>
 {
     private readonly ILogger<GetSalesOrderLinesActivity> _logger;
     public GetSalesOrderLinesActivity(ILogger<GetSalesOrderLinesActivity> logger) => _logger = logger;
 
-    protected override SalesOrderModel Execute(TaskContext context, SalesforceNeoApproveOrderModel input)
+    protected override string Execute(TaskContext context, string input)
     {
-        throw new NotImplementedException();
+        return input + "." + nameof(GetSalesOrderLinesActivity);
     }
 }

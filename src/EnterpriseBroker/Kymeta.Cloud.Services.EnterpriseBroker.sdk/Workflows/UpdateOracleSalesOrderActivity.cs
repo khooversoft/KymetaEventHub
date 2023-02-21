@@ -4,13 +4,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows;
 
-public class UpdateOracleSalesOrderActivity : TaskActivity<SalesOrderModel, OracleSalesOrderResponseModel>
+/// <summary>
+/// Input: SalesOrderModel
+/// Output: OracleSalesOrderResponseModel
+/// </summary>
+public class UpdateOracleSalesOrderActivity : TaskActivity<string, string>
 {
     private readonly ILogger<UpdateOracleSalesOrderActivity> _logger;
     public UpdateOracleSalesOrderActivity(ILogger<UpdateOracleSalesOrderActivity> logger) => _logger = logger;
 
-    protected override OracleSalesOrderResponseModel Execute(TaskContext context, SalesOrderModel input)
+    protected override string Execute(TaskContext context, string input)
     {
-        throw new NotImplementedException();
+        return input + "." + nameof(UpdateOracleSalesOrderActivity);
     }
 }

@@ -21,7 +21,6 @@ public class SalesOrderOrchestration : TaskOrchestration<bool, string>
     public override async Task<bool> RunTask(OrchestrationContext context, string input)
     {
         using var ls = _logger.LogEntryExit();
-        string prefix = context.IsReplaying ? "**" : string.Empty;
 
         _logger.LogInformation(
             "Starting orchestration, replaying={replaying}, InstanceId={instanceId}, ExceutionId={executionId}",
@@ -42,13 +41,13 @@ public class SalesOrderOrchestration : TaskOrchestration<bool, string>
 
         try
         {
-            SalesforceNeoApproveOrderModel eventData = input.ToObject<SalesforceNeoApproveOrderModel>().NotNull();
+            //SalesforceNeoApproveOrderModel eventData = input.ToObject<SalesforceNeoApproveOrderModel>().NotNull();
 
-            SalesOrderModel salesOrderModel = await context.ScheduleTask<SalesOrderModel>(typeof(GetSalesOrderLinesActivity), options, eventData);
+            string salesOrderModel = await context.ScheduleWithRetry<string>(typeof(GetSalesOrderLinesActivity), options, input);
 
-            OracleSalesOrderResponseModel oracleResponse = await context.ScheduleTask<OracleSalesOrderResponseModel>(typeof(UpdateOracleSalesOrderActivity), options, salesOrderModel);
+            string oracleResponse = await context.ScheduleWithRetry<string>(typeof(UpdateOracleSalesOrderActivity), options, salesOrderModel);
 
-            bool success = await context.ScheduleTask<bool>(typeof(SetSalesOrderWithOracleActivity), options, salesOrderModel);
+            string success = await context.ScheduleWithRetry<string>(typeof(SetSalesOrderWithOracleActivity), options, oracleResponse);
 
             _logger.LogInformation("Completed orchestration");
         }

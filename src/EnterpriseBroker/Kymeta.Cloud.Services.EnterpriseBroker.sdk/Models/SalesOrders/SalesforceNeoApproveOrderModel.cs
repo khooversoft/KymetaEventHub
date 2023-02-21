@@ -15,7 +15,7 @@ public record SalesforceNeoApproveOrderModel
 
 public record SalesforceNeoApproveOrderData
 {
-    public string? Schmea { get; init; }
+    public string? Schema { get; init; }
     public SalesforceNeoApproveOrderPayload Payload { get; init; } = null!;
     public SalesorderEventModel Event { get; init; } = null!;
 

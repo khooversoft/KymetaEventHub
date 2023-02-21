@@ -5,6 +5,7 @@ using DurableTask.AzureStorage;
 using DurableTask.Core;
 using DurableTask.Emulator;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 
 const string storageHubConnectionString = "DefaultEndpointsProtocol=https;AccountName=kymetaeventhubstorage;AccountKey=sSWJ7oHIwKS4XQlAICBpV3eOHR7R2Eo0vhPpY1rMsh+D0yv4DSqIij9WPcxGUl87tyw7Sl8cLtuL+AStWxlFaQ==;EndpointSuffix=core.windows.net";
@@ -16,6 +17,9 @@ var serviceProvider = new ServiceCollection()
     .AddSingleton<TestActivity2>()
     .AddSingleton<TestActivity3>()
     .AddSingleton<TestActivity4>()
+    .AddSingleton<TestOrchestration>()
+    .AddSingleton<SubTestOrchestration>()
+    .AddSingleton(new Option("option.Name"))
     .BuildServiceProvider();
 
 await startAsync(serviceProvider);
@@ -35,8 +39,10 @@ async Task startAsync(IServiceProvider serviceProvider)
     var service = new LocalOrchestrationService();
 
     TaskHubWorker hubWorker = new TaskHubWorker(service);
-    hubWorker.AddTaskOrchestrations(typeof(TestOrchestration));
-    hubWorker.AddTaskOrchestrations(typeof(SubTestOrchestration));
+    hubWorker.AddTaskOrchestrations(new ActivityCreator<TaskOrchestration>(typeof(TestOrchestration), serviceProvider));
+    hubWorker.AddTaskOrchestrations(new ActivityCreator<TaskOrchestration>(typeof(SubTestOrchestration), serviceProvider));
+    //hubWorker.AddTaskOrchestrations(typeof(TestOrchestration));
+    //hubWorker.AddTaskOrchestrations(typeof(SubTestOrchestration));
     hubWorker.AddTaskActivities(new ActivityCreator<TaskActivity>(typeof(TestActivity1), serviceProvider));
     hubWorker.AddTaskActivities(new ActivityCreator<TaskActivity>(typeof(TestActivity2), serviceProvider));
     hubWorker.AddTaskActivities(new ActivityCreator<TaskActivity>(typeof(TestActivity3), serviceProvider));
@@ -57,10 +63,19 @@ public class TestActivity2 : BaseActivity<string, int> { public TestActivity2() 
 public class TestActivity3 : BaseActivity<string, int> { public TestActivity3() : base("Task #3", 100) { } }
 public class TestActivity4 : BaseActivity<string, int> { public TestActivity4() : base("Task #4", 200) { } }
 
+public record Option(string Name);
+
 
 
 public class TestOrchestration : TaskOrchestration<bool, string>
 {
+    private readonly Option _option;
+
+    public TestOrchestration(Option option)
+    {
+        _option = option;
+    }
+
     public override async Task<bool> RunTask(OrchestrationContext context, string input)
     {
         string prefix = context.IsReplaying ? "**" : string.Empty;
@@ -112,6 +127,13 @@ public class TestOrchestration : TaskOrchestration<bool, string>
 
 public class SubTestOrchestration : TaskOrchestration<int, int>
 {
+    private readonly Option _option;
+
+    public SubTestOrchestration(Option option)
+    {
+        _option = option;
+    }
+
     public async override Task<int> RunTask(OrchestrationContext context, int input)
     {
         string prefix = context.IsReplaying ? "**" : string.Empty;
@@ -159,7 +181,7 @@ public class SubTestOrchestration : TaskOrchestration<int, int>
     }
 }
 
-public class ActivityCreator<T> : ObjectCreator<T> where T : notnull, TaskActivity
+public class ActivityCreator<T> : ObjectCreator<T> where T : notnull
 {
     private readonly Type _activityType;
     private readonly IServiceProvider _serviceProvider;

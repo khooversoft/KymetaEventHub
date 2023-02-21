@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 
 [assembly: InternalsVisibleTo("Kymeta.Cloud.Services.EnterpriseBroker.sdk.Test")]
+[assembly: InternalsVisibleTo("Kymeta.Cloud.Services.EnterpriseBroker.UnitTests")]
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -131,8 +132,8 @@ builder.Services.AddHostedService<SalesforceBackgroundOperationService>();
 builder.Services.AddScoped<ISalesforceProcessingService, SalesforceProcessingService>();
 builder.Services.AddHostedService<OracleBackgroundOperationService>();
 builder.Services.AddScoped<IOracleProcessingService, OracleProcessingService>();
-//builder.Services.AddHostedService<SalesforcePlatformEventsBackgroundOperationService>();
-//builder.Services.AddSingleton<ISalesforcePlatformEventsProcessingService, SalesforcePlatformEventsProcessingService>();
+builder.Services.AddHostedService<SalesforcePlatformEventsBackgroundOperationService>();
+builder.Services.AddSingleton<ISalesforcePlatformEventsProcessingService, SalesforcePlatformEventsProcessingService>();
 #endregion
 
 

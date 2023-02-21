@@ -1,9 +1,11 @@
 ﻿using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
 
@@ -25,16 +27,44 @@ public static class Startup
         services.NotNull();
 
         services.AddTransient<SalesforceAccessTokenHandler>();
-        services.AddSingleton<MessageEventService>();
+
         services.AddSingleton<ReplayIdStoreService>();
         services.AddSingleton<SalesforceClient2>();
 
-        services.AddSingleton<EventOrchestrationService>();
+        services.AddSingleton<SalesOrderOrchestration>();
         services.AddSingleton<GetSalesOrderLinesActivity>();
         services.AddSingleton<SetSalesOrderWithOracleActivity>();
         services.AddSingleton<UpdateOracleSalesOrderActivity>();
 
-        services.AddHostedService<MessageEventBackgroundService>();
+        //services.AddSingleton<MessageListenerService>();
+        //services.AddSingleton<OrchestrationService>();
+
+        //services.AddHostedService<BackgroundHost<MessageListenerService>>();
+        //services.AddHostedService<BackgroundHost<OrchestrationService>>();
+
+        //services.AddMessageListenerService((service, builder) =>
+        //{
+        //    ServiceOption option = service.GetRequiredService<ServiceOption>();
+
+        //    //builder.AddChannel(option.Salesforce.PlatformEvents.Channels.Asset);
+        //    builder.AddChannel(option.Salesforce.PlatformEvents.Channels.NeoApproveOrder);
+        //});
+
+        services.AddOrchestrationServices(builder =>
+        {
+            builder.AddTaskOrchestrations<SalesOrderOrchestration>();
+            builder.AddTaskActivities<GetSalesOrderLinesActivity>();
+            builder.AddTaskActivities<SetSalesOrderWithOracleActivity>();
+            builder.AddTaskActivities<UpdateOracleSalesOrderActivity>();
+
+            builder.MapChannel((services, map) =>
+            {
+                ServiceOption option = services.GetRequiredService<ServiceOption>();
+
+                map.Map<SalesOrderOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoApproveOrder);
+            });
+        });
+
 
         services.AddHttpClient<SalesforceAuthClient>((services, httpClient) =>
         {
@@ -48,8 +78,8 @@ public static class Startup
             var option = services.GetRequiredService<ServiceOption>();
             var authClient = services.GetRequiredService<SalesforceAuthClient>();
 
-            var authDetails = authClient.GetAuthToken(CancellationToken.None).Result.NotNull();
-            httpClient.BaseAddress = new Uri(authDetails.InstanceUrl + "/services/data/v56.0");
+            SalesforceAuthenticationResponse authDetails = authClient.GetAuthToken(CancellationToken.None).Result.NotNull();
+            httpClient.BaseAddress = new Uri(authDetails.InstanceUrl + option.Salesforce.BasePath);
         })
         .AddPolicyHandler(_retryPolicy)
         .AddHttpMessageHandler<SalesforceAccessTokenHandler>();

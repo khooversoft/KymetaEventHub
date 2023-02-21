@@ -24,6 +24,7 @@ public record ConnectionString
 
 public record SalesforceOption
 {
+    public string BasePath { get; init; } = null!;
     public ConnectedAppOption ConnectedApp { get; init; } = null!;
     public string Username { get; init; } = "defaultusername";
     public string Password { get; init; } = "defaultpassword";
@@ -64,6 +65,7 @@ public static class ServiceOptionExtensions
         if (!subject.UseDurableTaskEmulator) subject.ConnectionStrings.DurableTask.NotEmpty(message: msg);
 
         subject.Salesforce.NotNull(message: msg);
+        subject.Salesforce.BasePath.NotNull(message: msg);
         subject.Salesforce.ConnectedApp.NotNull(message: msg);
         subject.Salesforce.ConnectedApp.ClientId.NotEmpty(message: msg);
         subject.Salesforce.ConnectedApp.ClientSecret.NotEmpty(message: msg);

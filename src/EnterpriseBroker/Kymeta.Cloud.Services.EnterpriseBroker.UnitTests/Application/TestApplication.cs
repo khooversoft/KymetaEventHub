@@ -1,18 +1,26 @@
-﻿using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
+using Kymeta.Cloud.Services.EnterpriseBroker.Services.BackgroundOperations;
+using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 
-namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Test.Application;
+namespace Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.Application;
 
 internal static class TestApplication
 {
     private static bool _initialized = false;
     private static WebApplicationFactory<Program> _host = null!;
-    private static SalesforceClient2? _apiClient;
     private static object _lock = new object();
 
     public static void StartHost()
@@ -40,22 +48,14 @@ internal static class TestApplication
 
                     builder.ConfigureTestServices(services =>
                     {
-                        services.AddSingleton<ISalesforceClient2, TestSalesforceClient>();
-                        //services
-                        //    .Select((x, i) => (x, i))
-                        //    .Reverse()
-                        //    .Where(x => x.x.ServiceType == typeof(IDocumentStore) || x.x.ServiceType == typeof(Context))
-                        //    .ForEach(x => services.RemoveAt(x.i));
+                        services.Remove<SalesforceBackgroundOperationService>();
+                        services.Remove<ISalesforceProcessingService>();
+                        services.Remove<OracleBackgroundOperationService>();
+                        services.Remove<IOracleProcessingService>();
+                        services.Remove<SalesforcePlatformEventsBackgroundOperationService>();
+                        services.Remove<SalesforcePlatformEventsProcessingService>();
 
-                        //services.AddSingleton<IDocumentStore, TestDocumentStore>();
-                        //services.AddSingleton<Context>();
-
-                        //services.AddSingleton<IDatalakeStore>(service =>
-                        //{
-                        //    var factory = service.GetRequiredService<ILoggerFactory>();
-
-                        //    return new ResourceDatalakeStore(typeof(TestApplication), "kymetahub.test.TestData", factory.CreateLogger<ResourceDatalakeStore>());
-                        //});
+                        services.Remove<BackgroundHost<MessageListenerService>>();
                     });
                 });
 
