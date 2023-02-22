@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Extensions\**" />
+      <EmbeddedResource Remove="Extensions\**" />
+      <None Remove="Extensions\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="CometD.NetCore.Salesforce" Version="3.0.5" />
         <PackageReference Include="Microsoft.Azure.DurableTask.AzureStorage" Version="1.13.4" />
         <PackageReference Include="Microsoft.Azure.DurableTask.Emulator" Version="2.6.0" />
@@ -22,10 +28,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Toolbox\Toolbox.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Extensions\" />
     </ItemGroup>
 
 </Project>

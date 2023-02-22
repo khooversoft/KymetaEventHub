@@ -19,8 +19,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 
-[assembly: InternalsVisibleTo("Kymeta.Cloud.Services.EnterpriseBroker.sdk.Test")]
 [assembly: InternalsVisibleTo("Kymeta.Cloud.Services.EnterpriseBroker.UnitTests")]
+[assembly: InternalsVisibleTo("Kymeta.Cloud.Services.EnterpriseBroker.IntegrationTests")]
 
 var builder = WebApplication.CreateBuilder(args);
 
