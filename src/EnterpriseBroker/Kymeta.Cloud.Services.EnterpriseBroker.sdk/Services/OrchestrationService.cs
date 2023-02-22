@@ -4,7 +4,6 @@ using DurableTask.Emulator;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows;
-using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
 
@@ -16,11 +15,10 @@ public class OrchestrationService : IBackgroundHost
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<OrchestrationService> _logger;
     private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(initialCount: 1);
-    private IOrchestrationService? _orchestrationService;
-    private IOrchestrationServiceClient? _orchestrationServiceClient;
-    private TaskHubClient? _taskHubClient;
-    private readonly string _instance = Guid.NewGuid().ToString();
     private readonly OrchestrationConfiguration _config;
+
+    private TaskHubClient? _taskHubClient;
+    private IOrchestrationService? _orchestrationService;
 
     public OrchestrationService(ServiceOption option, IServiceProvider serviceProvider, OrchestrationConfiguration config, ILogger<OrchestrationService> logger)
     {
@@ -43,13 +41,11 @@ public class OrchestrationService : IBackgroundHost
                 StorageConnectionString = _option.ConnectionStrings.DurableTask,
             };
 
-            object obj = _option.UseDurableTaskEmulator switch
+            _orchestrationService = _option.UseDurableTaskEmulator switch
             {
                 true => new LocalOrchestrationService(),
                 false => new AzureStorageOrchestrationService(settings),
             };
-            _orchestrationService = (IOrchestrationService)obj;
-            _orchestrationServiceClient = (IOrchestrationServiceClient)obj;
 
             TaskHubWorker hubWorker = new TaskHubWorker(_orchestrationService)
                 .AddTaskOrchestrations(_config.TaskOrchestrations.Select(x => x.ToOrchestrationObjectCreator(_serviceProvider)).ToArray())
@@ -58,7 +54,7 @@ public class OrchestrationService : IBackgroundHost
             await _orchestrationService.CreateIfNotExistsAsync();
             await hubWorker.StartAsync();
 
-            _taskHubClient = new TaskHubClient(_orchestrationServiceClient);
+            _taskHubClient = new TaskHubClient((IOrchestrationServiceClient)_orchestrationService);
 
             return;
         }
@@ -74,7 +70,7 @@ public class OrchestrationService : IBackgroundHost
         if (current != null) await current.StopAsync();
     }
 
-    public async Task RunOrchestration(MessageEventContent messageEvent)
+    public async Task<(bool success, string? instanceId)> RunOrchestration(MessageEventContent messageEvent)
     {
         messageEvent.NotNull();
         _taskHubClient.NotNull(message: "Orchestration not started");
@@ -82,17 +78,20 @@ public class OrchestrationService : IBackgroundHost
         if (!_config.ChannelMapToOrchestrations.TryGetValue(messageEvent.Channel, out Type? orchestrationType))
         {
             _logger.LogCritical("Channel={channel} is not registered", messageEvent.Channel);
-            return;
+            return (false, null);
         }
+
+        string instanceId = Guid.NewGuid().ToString();
 
         try
         {
-            string instanceId = Guid.NewGuid().ToString();
             OrchestrationInstance instance = await _taskHubClient.CreateOrchestrationInstanceAsync(orchestrationType, instanceId, messageEvent.Json);
             _logger.LogInformation("Orchestration started - instanceId={instanceId}, ExecutionId={executionId}", instanceId, instance.ExecutionId);
 
             OrchestrationState result = await _taskHubClient.WaitForOrchestrationAsync(instance, TimeSpan.FromSeconds(60));
-            _logger.LogInformation("Orchestration result - instanceId={instanceId}, OrchestrationStatus={orchestrationStatus}", instanceId, result.OrchestrationStatus);
+            _logger.LogInformation("Orchestration completed - instanceId={instanceId}, OrchestrationStatus={orchestrationStatus}", instanceId, result.OrchestrationStatus);
+
+            return (true, instanceId);
         }
         catch (TimeoutException ex)
         {
@@ -102,6 +101,8 @@ public class OrchestrationService : IBackgroundHost
         {
             _logger.LogError(ex, "Orchestration failed for {messageEvent}", messageEvent);
         }
+
+        return (false, instanceId);
     }
 }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
 
-public record SalesforceNeoApproveOrderModel
+public record Event_SalesforceNeoApproveOrderModel
 {
     public SalesforceNeoApproveOrderData Data { get; init; } = null!;
     public string Channel { get; init; } = null!;

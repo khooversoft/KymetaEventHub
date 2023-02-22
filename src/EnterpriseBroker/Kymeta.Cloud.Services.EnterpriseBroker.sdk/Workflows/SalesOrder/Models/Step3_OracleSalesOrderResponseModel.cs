@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
 
-public record OracleSalesOrderResponseModel
+public record Step3_OracleSalesOrderResponseModel
 {
     public string? OracleSalesOrderId { get; init; }
     public string? IntegrationStatus { get; init; }

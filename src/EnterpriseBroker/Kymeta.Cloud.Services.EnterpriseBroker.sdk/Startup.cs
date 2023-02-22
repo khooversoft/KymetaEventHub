@@ -2,7 +2,8 @@
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activities;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,31 +32,12 @@ public static class Startup
         services.AddSingleton<ReplayIdStoreService>();
         services.AddSingleton<SalesforceClient2>();
 
-        services.AddSingleton<SalesOrderOrchestration>();
-        services.AddSingleton<GetSalesOrderLinesActivity>();
-        services.AddSingleton<SetSalesOrderWithOracleActivity>();
-        services.AddSingleton<UpdateOracleSalesOrderActivity>();
-
-        //services.AddSingleton<MessageListenerService>();
-        //services.AddSingleton<OrchestrationService>();
-
-        //services.AddHostedService<BackgroundHost<MessageListenerService>>();
-        //services.AddHostedService<BackgroundHost<OrchestrationService>>();
-
-        //services.AddMessageListenerService((service, builder) =>
-        //{
-        //    ServiceOption option = service.GetRequiredService<ServiceOption>();
-
-        //    //builder.AddChannel(option.Salesforce.PlatformEvents.Channels.Asset);
-        //    builder.AddChannel(option.Salesforce.PlatformEvents.Channels.NeoApproveOrder);
-        //});
-
         services.AddOrchestrationServices(builder =>
         {
             builder.AddTaskOrchestrations<SalesOrderOrchestration>();
-            builder.AddTaskActivities<GetSalesOrderLinesActivity>();
-            builder.AddTaskActivities<SetSalesOrderWithOracleActivity>();
-            builder.AddTaskActivities<UpdateOracleSalesOrderActivity>();
+            builder.AddTaskActivities<Step2_GetSalesOrderLinesActivity>();
+            builder.AddTaskActivities<Step4_UpdateSalesforceSalesOrderActivity>();
+            builder.AddTaskActivities<Step3_SetOracleSalesOrderActivity>();
 
             builder.MapChannel((services, map) =>
             {

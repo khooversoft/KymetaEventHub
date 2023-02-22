@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
+namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 
 public record SalesorderEventModel
 {

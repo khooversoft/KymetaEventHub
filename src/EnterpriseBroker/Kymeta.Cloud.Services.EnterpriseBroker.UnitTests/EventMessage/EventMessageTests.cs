@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
@@ -16,6 +18,7 @@ public class EventMessageTests
     public async Task GivenSalesOrderMessage_ShouldProcess()
     {
         var orchestration = TestApplication.GetRequiredService<OrchestrationService>();
+        var transLog = TestApplication.GetRequiredService<ITransactionLoggingService>();
 
         var option = TestApplication.GetRequiredService<ServiceOption>();
 
@@ -28,13 +31,19 @@ public class EventMessageTests
             Json = data.ToJson(),
         };
 
-        await orchestration.RunOrchestration(message);
+        (bool success, string? instanceId) = await orchestration.RunOrchestration(message);
+        success.Should().BeTrue();
 
-        await Task.Delay(TimeSpan.FromSeconds(1500));
+        transLog.GetLogItems()
+            .Reverse()
+            .Where(x => x.InstanceId == instanceId)
+            .Where(x => x.Method == "SalesOrderOrchestration.RunTask" && x.SubjectJson == "completed")
+            .FirstOrDefault().Should().NotBeNull();
+
+        transLog.GetLogItems().Count.Should().Be(10);
     }
 
-
-    private SalesforceNeoApproveOrderModel CreateNeoApproval(ServiceOption option) => new SalesforceNeoApproveOrderModel
+    private Event_SalesforceNeoApproveOrderModel CreateNeoApproval(ServiceOption option) => new Event_SalesforceNeoApproveOrderModel
     {
         Channel = option.Salesforce.PlatformEvents.Channels.NeoApproveOrder,
         Data = new SalesforceNeoApproveOrderData

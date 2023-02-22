@@ -2,7 +2,7 @@
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
 
-public record SalesOrderModel
+public record Step2_GetSalesOrderDetailsModel
 {
     public string? SourceTransactionId { get; init; }
     public string? OrderKey { get; init; }
@@ -19,7 +19,7 @@ public record SalesOrderLineModel
 
 public static class SalesOrderModelExtensions
 {
-    public static bool IsValid(this SalesOrderModel subject)
+    public static bool IsValid(this Step2_GetSalesOrderDetailsModel subject)
     {
         return subject != null &&
             subject.SourceTransactionId.IsNotEmpty() &&

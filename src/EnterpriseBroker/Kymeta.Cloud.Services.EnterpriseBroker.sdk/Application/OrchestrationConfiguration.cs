@@ -1,4 +1,4 @@
-﻿namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
+﻿namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
 
 public record OrchestrationConfiguration
 {

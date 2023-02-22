@@ -1,4 +1,5 @@
 ﻿using DurableTask.Core;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +12,10 @@ public static class ConfigurationExtensions
         var builder = new OrchestrationConfigurationBuilder();
         config(builder);
 
-        serviceCollection.AddTransient<MessageChannelListener>();
+        serviceCollection.AddSingleton<ITransactionLoggingService, TransactionLoggingService>();
         serviceCollection.AddSingleton<IMessageRouter, MessageRouter>();
+
+        serviceCollection.AddTransient<MessageChannelListener>();
         serviceCollection.AddSingleton<MessageListenerService>();
         serviceCollection.AddSingleton<OrchestrationService>();
 
@@ -47,17 +50,14 @@ public static class ConfigurationExtensions
         public List<Type> TaskOrchestrations { get; } = new List<Type>();
         public List<Type> TaskActivities { get; } = new List<Type>();
         public Action<IServiceProvider, MapChannelBuilder>? MapBuilder { get; set; }
-
         public OrchestrationConfigurationBuilder AddTaskOrchestrations<T>() where T : TaskOrchestration => this.Action(x => x.TaskOrchestrations.Add(typeof(T)));
         public OrchestrationConfigurationBuilder AddTaskActivities<T>() where T : TaskActivity => this.Action(x => x.TaskActivities.Add(typeof(T)));
-
         public OrchestrationConfigurationBuilder MapChannel(Action<IServiceProvider, MapChannelBuilder> builder) => this.Action(x => x.MapBuilder = builder);
     }
 
     public class MapChannelBuilder
     {
         public IDictionary<string, Type> ChannelMap { get; } = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
-
         public MapChannelBuilder Map<T>(string channel) => this.Action(x => ChannelMap[channel] = typeof(T));
     }
 }

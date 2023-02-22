@@ -5,6 +5,9 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 
 public record MessageEventContent
 {
+    public string Id { get; } = Guid.NewGuid().ToString();
+    public DateTime Timestamp { get; } = DateTime.UtcNow;
+
     public string Channel { get; init; } = null!;
     public string ChannelId { get; init; } = null!;
     public long ReplayId { get; init; }
