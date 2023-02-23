@@ -1,18 +1,20 @@
 ﻿using DurableTask.Core;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activities;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Activities;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Model;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
 
-namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
+namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate;
 
-public partial class SalesOrderOrchestration : TaskOrchestration<bool, string>
+public class InvoiceCreateOrchestration : TaskOrchestration<bool, string>
 {
     private readonly ITransactionLoggingService _transLog;
-    private readonly ILogger<SalesOrderOrchestration> _logger;
-    public SalesOrderOrchestration(ITransactionLoggingService transLog, ILogger<SalesOrderOrchestration> logger)
+    private readonly ILogger<TestOrchestration> _logger;
+    public InvoiceCreateOrchestration(ITransactionLoggingService transLog, ILogger<TestOrchestration> logger)
     {
         _transLog = transLog.NotNull();
         _logger = logger.NotNull();
@@ -36,14 +38,23 @@ public partial class SalesOrderOrchestration : TaskOrchestration<bool, string>
         try
         {
             string instanceId = context.OrchestrationInstance.InstanceId;
-            Event_SalesforceNeoApproveOrderModel eventData = input.ToObject<Event_SalesforceNeoApproveOrderModel>().NotNull();
+            Event_InvoiceCreateModel eventData = input.ToObject<Event_InvoiceCreateModel>().NotNull();
             _transLog.Add(this.GetMethodName(), instanceId, new TransLogItemBuilder().SetIsReplay(context.IsReplaying).SetSubject(eventData).Build());
 
-            Step2_GetSalesOrderDetailsModel salesOrderModel = await context.ScheduleWithRetry<Step2_GetSalesOrderDetailsModel>(typeof(Step2_GetSalesOrderLinesActivity), options, eventData);
+            SalesforceInvoiceLineModel salesOrderModel = await context.ScheduleWithRetry<SalesforceInvoiceLineModel>(typeof(Step1_GetInvoiceLineItemsActivity), options, eventData);
 
-            Step3_OracleSalesOrderResponseModel oracleResponse = await context.ScheduleWithRetry<Step3_OracleSalesOrderResponseModel>(typeof(Step3_SetOracleSalesOrderActivity), options, salesOrderModel);
+            switch (eventData.InvoiceType.ToLower())
+            {
+                case "hardware":
+                    CreatedInvoiceModel createdHardware = await context.ScheduleWithRetry<CreatedInvoiceModel>(typeof(Step2_CreateHardwareInvoiceActivity), options, eventData);
+                    break;
 
-            string success = await context.ScheduleWithRetry<string>(typeof(Step4_UpdateSalesforceSalesOrderActivity), options, oracleResponse);
+                case "other":
+                    CreatedInvoiceModel created = await context.ScheduleWithRetry<CreatedInvoiceModel>(typeof(Step3_CreateOtherInvoiceActivity), options, eventData);
+                    break;
+            }
+
+            bool updated = await context.ScheduleWithRetry<bool>(typeof(Step4_UpdateSalesforceInvoice), options, salesOrderModel);
 
             _transLog.Add(this.GetMethodName(), instanceId, "completed");
             _logger.LogInformation("Completed orchestration");
@@ -63,4 +74,3 @@ public partial class SalesOrderOrchestration : TaskOrchestration<bool, string>
         return true;
     }
 }
-

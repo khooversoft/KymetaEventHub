@@ -8,11 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
 
-public partial class SalesOrderOrchestration : TaskOrchestration<bool, string>
+public class TestOrchestration : TaskOrchestration<bool, string>
 {
     private readonly ITransactionLoggingService _transLog;
-    private readonly ILogger<SalesOrderOrchestration> _logger;
-    public SalesOrderOrchestration(ITransactionLoggingService transLog, ILogger<SalesOrderOrchestration> logger)
+    private readonly ILogger<TestOrchestration> _logger;
+    public TestOrchestration(ITransactionLoggingService transLog, ILogger<TestOrchestration> logger)
     {
         _transLog = transLog.NotNull();
         _logger = logger.NotNull();
@@ -36,14 +36,14 @@ public partial class SalesOrderOrchestration : TaskOrchestration<bool, string>
         try
         {
             string instanceId = context.OrchestrationInstance.InstanceId;
-            Event_SalesforceNeoApproveOrderModel eventData = input.ToObject<Event_SalesforceNeoApproveOrderModel>().NotNull();
+            Event_TestModel eventData = input.ToObject<Event_TestModel>().NotNull();
             _transLog.Add(this.GetMethodName(), instanceId, new TransLogItemBuilder().SetIsReplay(context.IsReplaying).SetSubject(eventData).Build());
 
-            Step2_GetSalesOrderDetailsModel salesOrderModel = await context.ScheduleWithRetry<Step2_GetSalesOrderDetailsModel>(typeof(Step2_GetSalesOrderLinesActivity), options, eventData);
+            Step2_TestModel salesOrderModel = await context.ScheduleWithRetry<Step2_TestModel>(typeof(Step2_TestActivity), options, eventData);
 
-            Step3_OracleSalesOrderResponseModel oracleResponse = await context.ScheduleWithRetry<Step3_OracleSalesOrderResponseModel>(typeof(Step3_SetOracleSalesOrderActivity), options, salesOrderModel);
+            Step3_TestModel oracleResponse = await context.ScheduleWithRetry<Step3_TestModel>(typeof(Step3_TestActivity), options, salesOrderModel);
 
-            string success = await context.ScheduleWithRetry<string>(typeof(Step4_UpdateSalesforceSalesOrderActivity), options, oracleResponse);
+            string success = await context.ScheduleWithRetry<string>(typeof(Step4_TestActivity), options, oracleResponse);
 
             _transLog.Add(this.GetMethodName(), instanceId, "completed");
             _logger.LogInformation("Completed orchestration");

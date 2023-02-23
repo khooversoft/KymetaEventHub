@@ -201,7 +201,7 @@ public class ActivityCreator<T> : ObjectCreator<T> where T : notnull
     }
 }
 
-public abstract class BaseActivity<TInput, TResult> : TaskActivity<TInput, TResult>
+public abstract class BaseActivity<TInput, TResult> : AsyncTaskActivity<TInput, TResult>
 {
     private readonly string _taskName;
     private readonly TResult _resultValue;
@@ -212,11 +212,11 @@ public abstract class BaseActivity<TInput, TResult> : TaskActivity<TInput, TResu
         _resultValue = resultValue;
     }
 
-    protected override TResult Execute(TaskContext context, TInput input)
+    protected override Task<TResult> ExecuteAsync(TaskContext context, TInput input)
     {
         Console.WriteLine($"Starting {_taskName}, Input={input}, Execution Id={context.OrchestrationInstance.ExecutionId}, Instance id={context.OrchestrationInstance.InstanceId}");
         Task.Delay(TimeSpan.FromSeconds(1)).GetAwaiter().GetResult();
         Console.WriteLine($"Ending {_taskName}, Execution Id={context.OrchestrationInstance.ExecutionId}, Instance id={context.OrchestrationInstance.InstanceId}");
-        return _resultValue;
+        return Task.FromResult(_resultValue);
     }
 }

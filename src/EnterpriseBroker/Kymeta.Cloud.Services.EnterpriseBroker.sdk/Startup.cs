@@ -39,11 +39,17 @@ public static class Startup
             builder.AddTaskActivities<Step4_UpdateSalesforceSalesOrderActivity>();
             builder.AddTaskActivities<Step3_SetOracleSalesOrderActivity>();
 
+            builder.AddTaskOrchestrations<TestOrchestration>();
+            builder.AddTaskActivities<Step2_TestActivity>();
+            builder.AddTaskActivities<Step3_TestActivity>();
+            builder.AddTaskActivities<Step4_TestActivity>();
+
             builder.MapChannel((services, map) =>
             {
                 ServiceOption option = services.GetRequiredService<ServiceOption>();
 
                 map.Map<SalesOrderOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoApproveOrder);
+                map.Map<TestOrchestration>("testChannel");
             });
         });
 
