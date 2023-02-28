@@ -6,7 +6,7 @@ using CometD.NetCore.Client;
 using CometD.NetCore.Client.Extension;
 using CometD.NetCore.Client.Transport;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.DependencyInjection;

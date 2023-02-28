@@ -2,5 +2,5 @@
 
 public class SalesforceQueryObjectModel<T>
 {
-    public List<T> Records { get; set; }
+    public List<T> Records { get; set; } = null!;
 }

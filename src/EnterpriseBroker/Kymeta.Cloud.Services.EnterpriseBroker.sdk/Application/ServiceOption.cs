@@ -55,6 +55,7 @@ public record ChannelsOption
 {
     public string Asset { get; init; } = null!;
     public string NeoApproveOrder { get; init; } = null!;
+    public string NeoInvoicePosted { get; init; } = null!;
 }
 
 

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
 
-public class SalesforceInvoiceLineModel
+public record OracleErpIntegrationResponseModel
 {
-    public IReadOnlyList<string> Lines { get; init; } = Array.Empty<string>();
+    public string OperationaName { get; init; } = null!;
+    public string ReqstId { get; init; } = null!;
 }

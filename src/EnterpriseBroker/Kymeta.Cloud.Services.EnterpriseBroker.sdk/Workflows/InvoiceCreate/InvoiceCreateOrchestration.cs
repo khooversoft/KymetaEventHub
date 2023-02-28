@@ -41,20 +41,29 @@ public class InvoiceCreateOrchestration : TaskOrchestration<bool, string>
             Event_InvoiceCreateModel eventData = input.ToObject<Event_InvoiceCreateModel>().NotNull();
             _transLog.Add(this.GetMethodName(), instanceId, new TransLogItemBuilder().SetIsReplay(context.IsReplaying).SetSubject(eventData).Build());
 
-            SalesforceInvoiceLineModel salesOrderModel = await context.ScheduleWithRetry<SalesforceInvoiceLineModel>(typeof(Step1_GetInvoiceLineItemsActivity), options, eventData);
-
-            switch (eventData.InvoiceType.ToLower())
+            switch (eventData.NEO_Invoice_Type__c.ToLower())
             {
                 case "hardware":
-                    CreatedInvoiceModel createdHardware = await context.ScheduleWithRetry<CreatedInvoiceModel>(typeof(Step2_CreateHardwareInvoiceActivity), options, eventData);
+                    await context.ScheduleWithRetry<bool>(typeof(H1_CreateHardwareInvoiceActivity), options, eventData);
+                    await context.ScheduleWithRetry<bool>(typeof(H2_ScanOracleAndUpdateInvoiceActivity), options, eventData);
                     break;
 
                 case "other":
-                    CreatedInvoiceModel created = await context.ScheduleWithRetry<CreatedInvoiceModel>(typeof(Step3_CreateOtherInvoiceActivity), options, eventData);
+                    IReadOnlyList<SalesforceInvoiceLineModel> lineItems = await context.ScheduleWithRetry<IReadOnlyList<SalesforceInvoiceLineModel>>(typeof(Step1_GetInvoiceLineItemsActivity), options, eventData);
+
+                    var otherRequest = new CreateOtherInvoiceRequest
+                    {
+                        Event = eventData,
+                        Lines = lineItems,
+                    };
+
+                    OracleCreateInvoiceResponseModel? created = await context.ScheduleWithRetry<OracleCreateInvoiceResponseModel?>(typeof(Step2_CreateOtherInvoiceActivity), options, otherRequest);
+                    break;
+
+                default:
+                    _logger.LogInformation("Skipping invoiceId={invoiceId}, not supported invoice type={invoiceType}", eventData.NEO_id__c, eventData.NEO_Invoice_Type__c);
                     break;
             }
-
-            bool updated = await context.ScheduleWithRetry<bool>(typeof(Step4_UpdateSalesforceInvoice), options, salesOrderModel);
 
             _transLog.Add(this.GetMethodName(), instanceId, "completed");
             _logger.LogInformation("Completed orchestration");

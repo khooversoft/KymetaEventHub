@@ -84,13 +84,10 @@ public class RestClient
     }
 
     public Task<RestResponse> GetAsync(CancellationToken token = default) => SendAsync(BuildRequestMessage(HttpMethod.Get), token);
-
     public Task<RestResponse> DeleteAsync(CancellationToken token = default) => SendAsync(BuildRequestMessage(HttpMethod.Delete), token);
-
     public Task<RestResponse> PostAsync(CancellationToken token = default) => SendAsync(BuildRequestMessage(HttpMethod.Post), token);
-
     public Task<RestResponse> PutAsync(CancellationToken token = default) => SendAsync(BuildRequestMessage(HttpMethod.Put), token);
-
+    public Task<RestResponse> PatchAsync(CancellationToken token = default) => SendAsync(BuildRequestMessage(HttpMethod.Patch), token);
 
     private HttpRequestMessage BuildRequestMessage(HttpMethod method) => new HttpRequestMessage(method, EscapeQuery(Path))
     {

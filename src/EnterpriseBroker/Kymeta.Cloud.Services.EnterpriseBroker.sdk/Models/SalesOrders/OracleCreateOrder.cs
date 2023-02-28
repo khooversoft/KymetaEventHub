@@ -21,10 +21,13 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders
         public bool FreezeTaxFlag { get; set; }
         public bool SubmittedFlag { get; set; }
         public string? SourceTransactionRevisionNumber { get; set; }
+
         [JsonPropertyName("billToCustomer")]
         public CustomerBill[] BillToCustomer { get; set; } = Array.Empty<CustomerBill>();
+
         [JsonPropertyName("shipToCustomer")]
         public CustomerShip[] ShipToCustomer { get; set; } = Array.Empty<CustomerShip>();
+
         [JsonPropertyName("lines")]
         public OrderLines[] Lines { get; set; } = Array.Empty<OrderLines>();
     }

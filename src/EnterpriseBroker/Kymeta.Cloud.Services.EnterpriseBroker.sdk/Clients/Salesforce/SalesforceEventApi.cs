@@ -8,14 +8,9 @@ using Kymeta.Cloud.Services.Toolbox.Rest;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
 
-namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
+namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 
-public interface ISalesforceEventApi
-{
-    Task<bool> SendEvent<T>(string eventName, T value, CancellationToken token);
-}
-
-public class SalesforceEventApi : ISalesforceEventApi
+public class SalesforceEventApi
 {
     private readonly HttpClient _client;
     private readonly ILogger<SalesforceEventApi> _logger;
@@ -31,7 +26,7 @@ public class SalesforceEventApi : ISalesforceEventApi
         .SetLogger(_logger)
         .SetContent(value)
         .PostAsync(token)
-        .FuncAsync(async x => (await x) switch
+        .FuncAsync(async x => await x switch
         {
             RestResponse v when v.HttpResponseMessage.IsSuccessStatusCode => true,
             _ => false,

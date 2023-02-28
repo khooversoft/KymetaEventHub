@@ -21,6 +21,7 @@ public class Step4_UpdateSalesforceInvoice : AsyncTaskActivity<CreatedInvoiceMod
 
     protected override Task<bool> ExecuteAsync(TaskContext context, CreatedInvoiceModel input)
     {
+        using var ls = _logger.LogEntryExit(message: $"InstanceId={context.OrchestrationInstance.InstanceId}");
         _transLog.Add(this.GetMethodName(), context.OrchestrationInstance.InstanceId, input);
 
         _transLog.Add(this.GetMethodName(), context.OrchestrationInstance.InstanceId, true);

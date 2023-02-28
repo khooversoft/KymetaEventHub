@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 
-namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
+namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 
 /// <summary>
 /// Delegating handler that injects a client access token into an outgoing request

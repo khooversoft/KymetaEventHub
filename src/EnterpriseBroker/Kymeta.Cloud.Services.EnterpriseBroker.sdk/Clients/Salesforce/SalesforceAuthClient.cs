@@ -6,7 +6,7 @@ using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients;
+namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 
 public class SalesforceAuthClient
 {

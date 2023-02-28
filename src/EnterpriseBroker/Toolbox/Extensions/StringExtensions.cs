@@ -85,7 +85,7 @@ public static class StringExtensions
     /// <returns>hex values for hash</returns>
     public static string ToHashHex(this string subject) => subject
         .NotEmpty()
-        .ToBytes()
+        .StringToBytes()
         .ToHash()
         .ToHex();
 
@@ -95,7 +95,14 @@ public static class StringExtensions
     /// <param name="subject">subject to compare</param>
     /// <param name="value">value to compare to</param>
     /// <returns>true or false</returns>
-    public static bool EqualsIgnoreCase(this string subject, string value) => subject.Equals(value, StringComparison.OrdinalIgnoreCase);
+    public static bool EqualsIgnoreCase(this string? subject, string? value) => (subject, value) switch
+    {
+        (null, null) => true,
+        (null, not null) => false,
+        (not null, null) => false,
+
+        _ => subject.Equals(value, StringComparison.OrdinalIgnoreCase),
+    };
 
     /// <summary>
     /// Compute hash for multiple objects, using string representations
@@ -107,7 +114,7 @@ public static class StringExtensions
         values.NotNull();
 
         var ms = new MemoryStream();
-        values.ForEach(x => ms.Write(x.ToBytes()));
+        values.ForEach(x => ms.Write(x.StringToBytes()));
 
         ms.Seek(0, SeekOrigin.Begin);
         return MD5.Create().ComputeHash(ms);

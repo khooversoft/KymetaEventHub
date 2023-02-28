@@ -11,7 +11,7 @@ namespace Kymeta.Cloud.Services.Toolbox.Extensions
         /// </summary>
         /// <param name="subject"></param>
         /// <returns>byte array</returns>
-        public static byte[] ToBytes(this string? subject)
+        public static byte[] StringToBytes(this string? subject)
         {
             if (subject == null) return new byte[0];
 
@@ -61,7 +61,7 @@ namespace Kymeta.Cloud.Services.Toolbox.Extensions
         {
             if (subject == null) return new byte[0];
 
-            return subject.ToJson().ToBytes();
+            return subject.ToJson().StringToBytes();
         }
 
         /// <summary>

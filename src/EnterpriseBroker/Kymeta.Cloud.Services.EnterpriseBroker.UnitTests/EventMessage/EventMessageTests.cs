@@ -20,6 +20,7 @@ public class EventMessageTests
         var orchestration = TestApplication.GetRequiredService<OrchestrationService>();
         var transLog = TestApplication.GetRequiredService<ITransactionLoggingService>();
 
+        await Task.Delay(TimeSpan.FromMinutes(1));
         var option = TestApplication.GetRequiredService<ServiceOption>();
 
         var data = CreateEvent(option);
