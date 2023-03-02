@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.Toolbox.Rest;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;

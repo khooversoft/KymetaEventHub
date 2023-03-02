@@ -13,6 +13,7 @@ public record ServiceOption
     public SalesforceOption Salesforce { get; init; } = null!;
     public OracleOption Oracle { get; init; } = null!;
     public bool UseDurableTaskEmulator { get; init; } = false;
+    public TransactionLoggingOption TransactionLogging { get; init; } = null!;
 }
 
 public record ConnectionString
@@ -38,6 +39,7 @@ public record OracleOption
     public string Username { get; init; } = "defaultusername";
     public string Password { get; init; } = "defaultpassword";
     public string Endpoint { get; init; } = null!;
+    public string BasePath { get; init; } = null!;
 }
 
 public record ConnectedAppOption
@@ -58,6 +60,13 @@ public record ChannelsOption
     public string NeoInvoicePosted { get; init; } = null!;
 }
 
+public record TransactionLoggingOption
+{
+    public bool Enabled { get; init; }
+    public string LoggingFolder { get; init; } = null!;
+    public string BaseLogFileName { get; init; } = null!;
+}
+
 
 public static class ServiceOptionExtensions
 {
@@ -71,6 +80,7 @@ public static class ServiceOptionExtensions
         subject.ConnectionStrings.AzureCosmosDB.NotEmpty(message: msg);
         subject.ConnectionStrings.RedisCache.NotEmpty(message: msg);
         subject.ConnectionStrings.ActivityQueue.NotEmpty(message: msg);
+
         if (!subject.UseDurableTaskEmulator) subject.ConnectionStrings.DurableTask.NotEmpty(message: msg);
 
         subject.Salesforce.NotNull(message: msg);
@@ -91,6 +101,12 @@ public static class ServiceOptionExtensions
         subject.Salesforce.PlatformEvents.Channels.NotNull(message: msg);
         subject.Salesforce.PlatformEvents.Channels.Asset.NotEmpty(message: msg);
         subject.Salesforce.PlatformEvents.Channels.NeoApproveOrder.NotEmpty(message: msg);
+
+        if (subject.TransactionLogging?.Enabled == true)
+        {
+            subject.TransactionLogging.LoggingFolder.NotEmpty(message: msg);
+            subject.TransactionLogging.BaseLogFileName.NotEmpty(message: msg);
+        }
 
         return subject;
     }

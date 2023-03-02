@@ -11,23 +11,23 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
 public record OracleCreateInvoiceModel
 {
     public string TransactionType { get; } = "Invoice";
-    public string CustomerTransactionId { get; init; } = null!;
+    public long? CustomerTransactionId { get; init; }
     public string TransactionNumber { get; init; } = null!;
     public string BillToCustomerNumber { get; init; } = null!;
     public string ShipToCustomerNumber { get; init; } = null!;
-    public string ShipToSite { get; init; } = null!; 
-    public DateTime BillingDate { get; init; }
+    public string? ShipToSite { get; init; }
+    public string? BillingDate { get; init; }
     public string PaymentTerms { get; init; } = null!; 
-    public DateTime TransactionDate { get; init; }
+    public string? TransactionDate { get; init; }
     public string BusinessUnit { get; init; } = null!; 
-    public string InvoiceCurrencCode { get; init; } = null!; 
+    public string InvoiceCurrencyCode { get; init; } = null!; 
     public string CrossReference { get; init; } = null!; 
-    public DateTime DueDate { get; init; }
+    public string? DueDate { get; init; }
     public string TransactionSource { get; init; } = null!; 
     public string InternalNotes { get; init; } = null!; 
     public string Comments { get; init; } = null!;
 
-    [JsonPropertyName("invoiceLines")]
+    [JsonPropertyName("receivablesInvoiceLines")]
     public IReadOnlyList<OracleCreateInvoiceLineModel> InvoiceLines { get; init; } = Array.Empty<OracleCreateInvoiceLineModel>();
 }
 
@@ -42,7 +42,7 @@ public record OracleCreateInvoiceLineModel
     public float Quantity { get; init; }
 
     // Is this "Unit Selling Price" ???
-    public decimal UnitPrice { get; init; }
+    public decimal UnitSellingPrice { get; init; }
 
     // There is no ItemNumber in oracle invoice ???
     public string ItemNumber { get; init; } = null!;

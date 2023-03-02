@@ -1,0 +1,40 @@
+{
+  "data": {
+    "schema": "bHpst8CyZV-miPd5Sd1LLg",
+    "payload": {
+      "NEO_Oracle_Fulfillment_Id__c": "300000113496864,300000113498219,,300000113496521,",
+      "NEO_Posted_Date__c": "2023-03-01",
+      "NEO_Oracle_Bill_to_Address_ID__c": "9999999",
+      "NEO_Invoice_Type__c": "Other",
+      "NEO_Preferred_Contact_Method__c": "Email",
+      "NEO_Order_Number__c": "00001304",
+      "NEO_Invoice_Number__c": "INV-10039",
+      "NEO_Notes__c": "",
+      "CreatedById": "0056300000EdVN2AAN",
+      "NEO_Sales_Representative__c": null,
+      "NEO_Oracle_Ship_to_Address_ID__c": null,
+      "NEO_Oracle_Sales_Order_Id__c": "",
+      "NEO_PO_Number__c": "Downgrade",
+      "NEO_Invoice_Date__c": "2023-02-15T00:00:00.000Z",
+      "NEO_Invoice_Due_Date__c": "2023-03-17",
+      "NEO_id__c": "a7E630000000BQKEA2",
+      "NEO_Business_Unit__c": "Kymeta Corporation BU",
+      "NEO_Invoice_Status__c": "Posted",
+      "NEO_Ship_To_Customer_Number__c": "423011",
+      "NEO_Oracle_Account_ID__c": "77001",
+      "NEO_Oracle_Primary_Contact_ID__c": "8675309",
+      "NEO_Currency__c": "USD",
+      "CreatedDate": "2023-03-01T22:07:06.789Z",
+      "NEO_Payment_Term__c": "Net 30",
+      "NEO_Oracle_Bill_to_Contact_ID__c": "8675309",
+      "NEO_Order__c": "80163000002nGU7AAM",
+      "NEO_Bill_To_Name__c": "Neocol"
+    },
+    "event": {
+      "EventUuid": "42315d67-fbc8-473b-a81b-d8039932ab99",
+      "replayId": 15189879,
+      "EventApiName": "NEO_Posted_Invoice__e"
+    }
+  },
+  "channel": "/event/NEO_Posted_Invoice__e"
+}

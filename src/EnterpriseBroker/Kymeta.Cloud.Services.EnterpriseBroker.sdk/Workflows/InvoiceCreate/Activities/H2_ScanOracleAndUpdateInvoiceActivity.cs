@@ -3,7 +3,7 @@ using DurableTask.Core;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Oracle;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Model;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activities;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
@@ -45,9 +45,9 @@ public class H2_ScanOracleAndUpdateInvoiceActivity : AsyncTaskActivity<Event_Inv
 
         var updateRequest = new SalesforceUpdateInvoiceRequestModel
         {
-            NEO_Integration_Error = invoiceHeader != null ? "Clear" : $"Did not find Oracle invoice for fulfillmentIds={input.GetFulfillmentIds()}",
-            NEO_Integration_Status = invoiceHeader != null ? "Success" : "Failed",
-            OracleInvoiceNumber = invoiceHeader?.CustomerTransactionId.ToString() ?? "< error >",
+            NEO_Integration_Error__c = invoiceHeader != null ? "Clear" : $"Did not find Oracle invoice for fulfillmentIds={input.GetFulfillmentIds()}",
+            NEO_Integration_Status__c = invoiceHeader != null ? "Success" : "Failed",
+            NEO_Oracle_Invoice_Number__c = invoiceHeader?.CustomerTransactionId.ToString() ?? "< error >",
         };
 
         await _salesforceClient.Invoice.Update(input.NEO_id__c, updateRequest);

@@ -1,6 +1,6 @@
 ﻿using DurableTask.Core;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activities;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;

@@ -88,7 +88,7 @@ public class OrchestrationService : IBackgroundHost
             OrchestrationInstance instance = await _taskHubClient.CreateOrchestrationInstanceAsync(orchestrationType, instanceId, messageEvent.Json);
             _logger.LogInformation("Orchestration started - instanceId={instanceId}, ExecutionId={executionId}", instanceId, instance.ExecutionId);
 
-            OrchestrationState result = await _taskHubClient.WaitForOrchestrationAsync(instance, TimeSpan.FromSeconds(60));
+            OrchestrationState result = await _taskHubClient.WaitForOrchestrationAsync(instance, TimeSpan.FromSeconds(10060));
             _logger.LogInformation("Orchestration completed - instanceId={instanceId}, OrchestrationStatus={orchestrationStatus}", instanceId, result.OrchestrationStatus);
 
             return (true, instanceId);

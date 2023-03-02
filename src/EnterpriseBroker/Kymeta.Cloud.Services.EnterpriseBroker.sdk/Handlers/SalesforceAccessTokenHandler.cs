@@ -5,10 +5,11 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 
-namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
+namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Handlers;
 
 /// <summary>
 /// Delegating handler that injects a client access token into an outgoing request

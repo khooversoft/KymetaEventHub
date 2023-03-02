@@ -1,6 +1,6 @@
 ﻿using DurableTask.Core;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Activities;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Model;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
@@ -67,14 +67,13 @@ public class InvoiceCreateOrchestration : TaskOrchestration<bool, string>
 
             _transLog.Add(this.GetMethodName(), instanceId, "completed");
             _logger.LogInformation("Completed orchestration");
+            return true;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Orchestration failed");
             return false;
         }
-
-        return true;
     }
 
     private bool HandleError(Exception ex)

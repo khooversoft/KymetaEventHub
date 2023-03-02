@@ -11,6 +11,8 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Oracle;
 
 public class OracleClient
 {
+    private readonly Guid _instanceId = Guid.NewGuid();
+
     public OracleClient(HttpClient client, ILoggerFactory loggerFactory)
     {
         client.NotNull();

@@ -1,4 +1,4 @@
-﻿namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
+﻿namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 
 public record TransactionLogItem
 {

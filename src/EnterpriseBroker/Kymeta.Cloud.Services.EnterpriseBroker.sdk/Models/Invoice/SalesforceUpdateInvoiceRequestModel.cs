@@ -8,7 +8,8 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
 
 public record SalesforceUpdateInvoiceRequestModel
 {
-    public string? OracleInvoiceNumber { get; init; }
-    public string? NEO_Integration_Error { get; init; }
-    public string? NEO_Integration_Status { get; init; }
+    public string? NEO_Oracle_Invoice_Number__c { get; init; }
+    public string? NEO_Integration_Error__c { get; init; }
+    public string? NEO_Integration_Status__c { get; init; }
+    public string? NEO_Oracle_Invoice_Id__c { get; init; }
 }

@@ -49,7 +49,7 @@ internal static class TestApplication
                         services.Remove<SalesforcePlatformEventsBackgroundOperationService>();
                         services.Remove<SalesforcePlatformEventsProcessingService>();
 
-                        //services.Remove<BackgroundHost<MessageListenerService>>();
+                        services.Remove<BackgroundHost<MessageListenerService>>();
                         //services.Remove<BackgroundHost<OrchestrationService>>();
                     });
                 });

@@ -1,7 +1,9 @@
 ﻿using DurableTask.Core;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
 
@@ -12,7 +14,7 @@ public static class ConfigurationExtensions
         var builder = new OrchestrationConfigurationBuilder();
         config(builder);
 
-        serviceCollection.AddSingleton<ITransactionLoggingService, TransactionLoggingService>();
+        //serviceCollection.AddSingleton<ITransactionLoggingService, TransactionLoggingService>();
         serviceCollection.AddSingleton<IMessageRouter, MessageRouter>();
 
         serviceCollection.AddTransient<MessageChannelListener>();
@@ -40,6 +42,22 @@ public static class ConfigurationExtensions
                 TaskActivities = builder.TaskActivities,
                 ChannelMapToOrchestrations = channelBuilder.ChannelMap,
             };
+        });
+
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddTransactionLogging(this IServiceCollection serviceCollection, Action<IServiceProvider, ITransactionLoggingService> config)
+    {
+        serviceCollection.AddSingleton<TransactionLoggerBuffer>();
+
+        serviceCollection.AddSingleton<ITransactionLoggingService, TransactionLoggingService>(service =>
+        {
+            var logService = new TransactionLoggingService();
+            logService.AddProvider(service.GetRequiredService<TransactionLoggerBuffer>());
+
+            config(service, logService);
+            return logService;
         });
 
         return serviceCollection;

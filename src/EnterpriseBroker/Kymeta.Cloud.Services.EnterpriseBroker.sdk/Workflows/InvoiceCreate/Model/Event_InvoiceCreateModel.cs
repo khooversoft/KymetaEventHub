@@ -28,10 +28,10 @@ public record Event_InvoiceCreateModel
     public string NEO_Oracle_Bill_to_Contact_ID__c { get; init; } = null!;
     public string NEO_Bill_To_Name__c { get; init; } = null!;
     public string NEO_Sales_Representative__c { get; init; } = null!;
-    public DateTime blng__InvoiceDate__c { get; init; }
-    public DateTime blng__InvoicePostedDate__c { get; init; }
+    public DateTime NEO_InvoiceDate__c { get; init; }
+    public DateTime NEO_InvoicePostedDate__c { get; init; }
     public string NEO_Ship_To_Customer_Number__c { get; init; } = null!;
-    public string NEO_Oracle_Ship_to_Address_ID__c { get; init; } = null!;
+    public string? NEO_Oracle_Ship_to_Address_ID__c { get; init; }
     public string NEO_Payment_Term__c { get; init; } = null!;
 }
 

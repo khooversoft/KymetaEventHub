@@ -29,7 +29,7 @@ public class SalesforceInvoiceApi
         .GetRequiredContent<SalesforceSearchResult<SalesforceInvoiceLineModel>>();
 
     public async Task Update(string invoiceId, SalesforceUpdateInvoiceRequestModel subject, CancellationToken token = default) => await new RestClient(_client)
-        .SetPath($"sobjects/invoice/{invoiceId.NotEmpty()}")
+        .SetPath($"sobjects/blng__Invoice__c/{invoiceId.NotEmpty()}")
         .SetLogger(_logger)
         .SetContent(subject)
         .PatchAsync(token);

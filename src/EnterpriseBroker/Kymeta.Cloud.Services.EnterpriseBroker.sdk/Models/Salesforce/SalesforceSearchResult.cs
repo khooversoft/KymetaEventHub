@@ -13,7 +13,7 @@ public record SalesforceSearchResult<T>
     public int TotalSize { get; init; }
 
     [JsonPropertyName("done")]
-    public string Done { get; init; } = null!;
+    public bool Done { get; init; }
 
     [JsonPropertyName("records")]
     public IReadOnlyList<T> Records { get; init; } = Array.Empty<T>();
