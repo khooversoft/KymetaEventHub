@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
-using Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.Application;
-using Xunit;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Model;
-using Kymeta.Cloud.Services.Toolbox.Extensions;
-using Kymeta.Cloud.Services.Toolbox.Tools;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Resources;
-using System.Reflection;
-using System.IO;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Salesforce;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Model;
+using Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.Application;
+using Kymeta.Cloud.Services.Toolbox.Extensions;
+using Xunit;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.EventMessage;
 
-public class InvoiceEventTests
+public class InvoiceEventOtherTests
 {
     [Fact]
     public async Task GivenInvoiceMessage_ShouldProcess()
@@ -56,7 +50,7 @@ public class InvoiceEventTests
     private Event_InvoiceCreateModel CreateEvent(ServiceOption option)
     {
         var model = Assembly.GetAssembly(this.GetType())
-            .ReadAssemblyResource<SalesforceResponse<Event_InvoiceCreateModel>>("Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.Data.InvoiceEvent.json");
+            .ReadAssemblyResource<SalesforceResponse<Event_InvoiceCreateModel>>("Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.Data.InvoiceEventOthers.json");
 
         return model.Data.Payload;
     }

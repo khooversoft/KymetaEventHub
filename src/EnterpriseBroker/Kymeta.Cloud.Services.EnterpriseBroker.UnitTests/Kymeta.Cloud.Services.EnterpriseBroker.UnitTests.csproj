@@ -8,11 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Data\InvoiceEvent.json" />
+    <None Remove="Data\InvoiceEventHardware.json" />
+    <None Remove="Data\InvoiceEventOther.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\InvoiceEvent.json" />
+    <EmbeddedResource Include="Data\InvoiceEventHardware.json" />
+    <EmbeddedResource Include="Data\InvoiceEventOther.json" />
   </ItemGroup>
 
   <ItemGroup>
