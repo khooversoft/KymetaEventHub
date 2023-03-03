@@ -1,10 +1,8 @@
 ﻿using DurableTask.Core;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Salesforce;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Model;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activities;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
@@ -14,10 +12,13 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Act
 public class Step1_GetInvoiceLineItemsActivity : AsyncTaskActivity<Event_InvoiceCreateModel, IReadOnlyList<SalesforceInvoiceLineModel>>
 {
     private readonly ITransactionLoggingService _transLog;
-    private readonly ILogger<Step2_GetSalesOrderLinesActivity> _logger;
+    private readonly ILogger<Step1_GetInvoiceLineItemsActivity> _logger;
     private readonly SalesforceClient2 _client;
 
-    public Step1_GetInvoiceLineItemsActivity(SalesforceClient2 client, ITransactionLoggingService transLog, ILogger<Step2_GetSalesOrderLinesActivity> logger)
+    public Step1_GetInvoiceLineItemsActivity(
+        SalesforceClient2 client, 
+        ITransactionLoggingService transLog,
+        ILogger<Step1_GetInvoiceLineItemsActivity> logger)
     {
         _client = client.NotNull();
         _transLog = transLog.NotNull();

@@ -4,7 +4,6 @@ using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Model;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activities;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
@@ -14,11 +13,16 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Act
 public class Step2_CreateOtherInvoiceActivity : AsyncTaskActivity<CreateOtherInvoiceRequest, OracleCreateInvoiceResponseModel?>
 {
     private readonly ITransactionLoggingService _transLog;
-    private readonly ILogger<Step2_GetSalesOrderLinesActivity> _logger;
+    private readonly ILogger<Step2_CreateOtherInvoiceActivity> _logger;
     private readonly OracleClient _oracleClient;
     private readonly SalesforceClient2 _salesforceClient;
 
-    public Step2_CreateOtherInvoiceActivity(SalesforceClient2 salesforceClient, OracleClient oracleClient, ITransactionLoggingService transLog, ILogger<Step2_GetSalesOrderLinesActivity> logger)
+    public Step2_CreateOtherInvoiceActivity(
+        SalesforceClient2 salesforceClient, 
+        OracleClient oracleClient,
+        ITransactionLoggingService transLog, 
+        ILogger<Step2_CreateOtherInvoiceActivity> logger
+        )
     {
         _salesforceClient = salesforceClient.NotNull();
         _oracleClient = oracleClient.NotNull();

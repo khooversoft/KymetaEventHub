@@ -14,8 +14,8 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activi
 public class Step2_TestActivity : AsyncTaskActivity<Event_TestModel, Step2_TestModel>
 {
     private readonly ITransactionLoggingService _transLog;
-    private readonly ILogger<Step2_GetSalesOrderLinesActivity> _logger;
-    public Step2_TestActivity(ITransactionLoggingService transLog, ILogger<Step2_GetSalesOrderLinesActivity> logger)
+    private readonly ILogger<Step2_TestActivity> _logger;
+    public Step2_TestActivity(ITransactionLoggingService transLog, ILogger<Step2_TestActivity> logger)
     {
         _transLog = transLog.NotNull();
         _logger = logger.NotNull();

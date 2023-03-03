@@ -46,10 +46,10 @@ public static class Startup
 
         services.AddOrchestrationServices(builder =>
         {
-            builder.AddTaskOrchestrations<SalesOrderOrchestration>();
-            builder.AddTaskActivities<Step2_GetSalesOrderLinesActivity>();
-            builder.AddTaskActivities<Step4_UpdateSalesforceSalesOrderActivity>();
-            builder.AddTaskActivities<Step3_SetOracleSalesOrderActivity>(); 
+            //builder.AddTaskOrchestrations<SalesOrderOrchestration>();
+            //builder.AddTaskActivities<Step2_GetSalesOrderLinesActivity>();
+            //builder.AddTaskActivities<Step4_UpdateSalesforceSalesOrderActivity>();
+            //builder.AddTaskActivities<Step3_SetOracleSalesOrderActivity>(); 
             
             builder.AddTaskOrchestrations<InvoiceCreateOrchestration>();
             builder.AddTaskActivities<H1_CreateHardwareInvoiceActivity>();
@@ -66,7 +66,7 @@ public static class Startup
             {
                 ServiceOption option = services.GetRequiredService<ServiceOption>();
 
-                map.Map<SalesOrderOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoApproveOrder);
+                //map.Map<SalesOrderOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoApproveOrder);
                 map.Map<InvoiceCreateOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoInvoicePosted);
                 map.Map<TestOrchestration>("testChannel");
             });

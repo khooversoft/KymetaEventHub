@@ -15,7 +15,7 @@ using Xunit;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.EventMessage;
 
-public class InvoiceEventOtherTests
+public class InvoiceEventHardwareTests
 {
     [Fact]
     public async Task GivenInvoiceMessage_ShouldProcess()
@@ -50,7 +50,7 @@ public class InvoiceEventOtherTests
     private Event_InvoiceCreateModel CreateEvent(ServiceOption option)
     {
         var model = Assembly.GetAssembly(this.GetType())
-            .ReadAssemblyResource<SalesforceResponse<Event_InvoiceCreateModel>>("Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.Data.InvoiceEventOthers.json");
+            .ReadAssemblyResource<SalesforceResponse<Event_InvoiceCreateModel>>("Kymeta.Cloud.Services.EnterpriseBroker.UnitTests.Data.InvoiceEventHardware.json");
 
         return model.Data.Payload;
     }

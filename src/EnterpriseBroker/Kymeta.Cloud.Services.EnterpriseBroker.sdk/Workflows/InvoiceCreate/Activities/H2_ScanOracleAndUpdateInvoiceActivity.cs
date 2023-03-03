@@ -16,11 +16,16 @@ public class H2_ScanOracleAndUpdateInvoiceActivity : AsyncTaskActivity<Event_Inv
 {
     private readonly TimeSpan _timeout = TimeSpan.FromMinutes(5);
     private readonly ITransactionLoggingService _transLog;
-    private readonly ILogger<Step2_GetSalesOrderLinesActivity> _logger;
+    private readonly ILogger<H2_ScanOracleAndUpdateInvoiceActivity> _logger;
     private readonly OracleClient _oracleClient;
     private readonly SalesforceClient2 _salesforceClient;
 
-    public H2_ScanOracleAndUpdateInvoiceActivity(SalesforceClient2 salesforceClient, OracleClient oracleClient, ITransactionLoggingService transLog, ILogger<Step2_GetSalesOrderLinesActivity> logger)
+    public H2_ScanOracleAndUpdateInvoiceActivity(
+        SalesforceClient2 salesforceClient, 
+        OracleClient oracleClient, 
+        ITransactionLoggingService transLog,
+        ILogger<H2_ScanOracleAndUpdateInvoiceActivity> logger
+        )
     {
         _transLog = transLog.NotNull();
         _oracleClient = oracleClient.NotNull();
@@ -65,6 +70,8 @@ public class H2_ScanOracleAndUpdateInvoiceActivity : AsyncTaskActivity<Event_Inv
 
         while (!tokenSource.IsCancellationRequested)
         {
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
             _logger.LogTrace("Looking up invoice for by all fullFillmentId={fullFillmentId}", fullfillmentIds.Join(","));
             OracleInvoiceHeaderModel? invoiceHeader = await _oracleClient.Invoice.FindInvoiceByDeliveryName(fullfillmentIds);
 
@@ -78,8 +85,6 @@ public class H2_ScanOracleAndUpdateInvoiceActivity : AsyncTaskActivity<Event_Inv
 
                 return invoiceHeader;
             }
-
-            await Task.Delay(TimeSpan.FromSeconds(1));
         }
 
         _logger.LogError("Oracle did not create invoice within timeout of {seconds} seconds for FullFillmentId={FullFillmentId}", _timeout.TotalSeconds, fullfillmentIds.Join(","));

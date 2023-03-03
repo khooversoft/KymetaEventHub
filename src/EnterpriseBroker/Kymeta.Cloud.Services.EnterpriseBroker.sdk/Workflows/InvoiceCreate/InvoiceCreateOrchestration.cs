@@ -44,7 +44,7 @@ public class InvoiceCreateOrchestration : TaskOrchestration<bool, string>
             switch (eventData.NEO_Invoice_Type__c.ToLower())
             {
                 case "hardware":
-                    await context.ScheduleWithRetry<bool>(typeof(H1_CreateHardwareInvoiceActivity), options, eventData);
+                    //await context.ScheduleWithRetry<bool>(typeof(H1_CreateHardwareInvoiceActivity), options, eventData);
                     await context.ScheduleWithRetry<bool>(typeof(H2_ScanOracleAndUpdateInvoiceActivity), options, eventData);
                     break;
 

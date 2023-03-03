@@ -25,7 +25,7 @@ public class OracleInvoiceApi
     }
 
     public async Task<OracleInvoiceHeaderModel?> FindInvoiceByDeliveryName(IReadOnlyList<string> fullfillmentIds, CancellationToken token = default) => await new RestClient(_client)
-        .SetPath($"receivablesInvoices?q=CreationDate>{DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd")}&expand=receivablesInvoiceLines.receivablesInvoiceTransactionDFF")
+        .SetPath($"receivablesInvoices?q=CreationDate>{DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd")}&expand=receivablesInvoiceLines.receivablesInvoiceLineTransactionDFF")
         .SetLogger(_logger)
         .GetAsync(token)
         .GetRequiredContent<OracleItemsResponse<OracleInvoiceHeaderModel>>()
