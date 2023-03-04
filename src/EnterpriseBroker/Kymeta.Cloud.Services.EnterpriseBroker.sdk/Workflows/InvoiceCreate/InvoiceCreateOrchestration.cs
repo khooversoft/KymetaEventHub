@@ -44,12 +44,13 @@ public class InvoiceCreateOrchestration : TaskOrchestration<bool, string>
             switch (eventData.NEO_Invoice_Type__c.ToLower())
             {
                 case "hardware":
-                    //await context.ScheduleWithRetry<bool>(typeof(H1_CreateHardwareInvoiceActivity), options, eventData);
+                    await context.ScheduleWithRetry<bool>(typeof(H1_CreateHardwareInvoiceActivity), options, eventData);
                     await context.ScheduleWithRetry<bool>(typeof(H2_ScanOracleAndUpdateInvoiceActivity), options, eventData);
                     break;
 
                 case "other":
-                    IReadOnlyList<SalesforceInvoiceLineModel> lineItems = await context.ScheduleWithRetry<IReadOnlyList<SalesforceInvoiceLineModel>>(typeof(Step1_GetInvoiceLineItemsActivity), options, eventData);
+                    IReadOnlyList<SalesforceInvoiceLineModel> lineItems =
+                        await context.ScheduleWithRetry<IReadOnlyList<SalesforceInvoiceLineModel>>(typeof(Step1_GetInvoiceLineItemsActivity), options, eventData);
 
                     var otherRequest = new CreateOtherInvoiceRequest
                     {
@@ -57,7 +58,8 @@ public class InvoiceCreateOrchestration : TaskOrchestration<bool, string>
                         Lines = lineItems,
                     };
 
-                    OracleCreateInvoiceResponseModel? created = await context.ScheduleWithRetry<OracleCreateInvoiceResponseModel?>(typeof(Step2_CreateOtherInvoiceActivity), options, otherRequest);
+                    OracleCreateInvoiceResponseModel? created =
+                        await context.ScheduleWithRetry<OracleCreateInvoiceResponseModel?>(typeof(Step2_CreateOtherInvoiceActivity), options, otherRequest);
                     break;
 
                 default:
