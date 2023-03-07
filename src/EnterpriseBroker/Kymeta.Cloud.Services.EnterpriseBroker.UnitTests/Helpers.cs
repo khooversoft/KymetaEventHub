@@ -218,7 +218,7 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.UnitTests
                             ProductCode = "U8999-00005-0",
                             TerminalKpn = "100-99999-101-A",
                             AntennaSerial = "ANT000C221221001",
-                            SatModem = "90001",
+                            GeoModemSerial = "90001",
                             HybridRouterSerial = null,
                             HybridRouterImei = null,
                             HybridRouterIccid = null,
@@ -228,7 +228,26 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.UnitTests
                             DescriptionFirstLine = "Unit Test Desc",
                             DescriptionSecondLine = null,
                             IpAddress = "192.168.0.101",
-                            LinkTimestamp = DateTime.UtcNow
+                            LinkTimestamp = DateTime.UtcNow,
+                            LeoModemSerial = "LeoSerialUT",
+                            LeoModemPart = "LeoModemPartUT",
+                            LeoModemMACAddress = "UTLeoModemMACAddress",
+                            LeoModemIMEI = "UTLeoModemIMEI",
+                            LeoModemIMSI = "UTLeoModemIMSI",
+                            LeoModemSWVersion = "LeoModemSWVersion",
+                            CartridgeSerial = "utCartridgeSerial",
+                            HybridRouterPart = "utHybridRouterPart",
+                            HybridRouterMAC = "HybridRouterMAC",
+                            KrcmPart = "utKrcmPart",
+                            KrcmSerial = "utKrcmSerial",
+                            McrcmPart = "utMrcrmPart",
+                            McrcmSerial = "UTMrcrmSerial",
+                            EgrPart = "UTEgrPart",
+                            EgrSerial = "UTEgrSerial",
+                            EgrMfr = "UTEgrMfr",
+                            OimPart = "UTOimPart",
+                            OimSerial = "UTOimSerial",
+                            OimSWVersion = "UTOimSWVersion"
                         }
                     }
                 }
@@ -284,7 +303,7 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.UnitTests
                     ProductCode = "U8999-00005-0",
                     TerminalKpn = "100-99999-101-A",
                     AntennaSerial = "ANT000C221221001",
-                    SatModem = "90001",
+                    GeoModemSerial = "90001",
                     HybridRouterSerial = null,
                     HybridRouterImei = null,
                     HybridRouterIccid = null,
@@ -294,7 +313,26 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.UnitTests
                     DescriptionFirstLine = "Unit Test Desc",
                     DescriptionSecondLine = null,
                     IpAddress = "192.168.0.101",
-                    LinkTimestamp = DateTime.UtcNow
+                    LinkTimestamp = DateTime.UtcNow,
+                    LeoModemSerial = "LeoSerialUT",
+                    LeoModemPart = "LeoModemPartUT",
+                    LeoModemMACAddress = "UTLeoModemMACAddress",
+                    LeoModemIMEI = "UTLeoModemIMEI",
+                    LeoModemIMSI = "UTLeoModemIMSI",
+                    LeoModemSWVersion = "LeoModemSWVersion",
+                    CartridgeSerial = "utCartridgeSerial",
+                    HybridRouterPart = "utHybridRouterPart",
+                    HybridRouterMAC = "HybridRouterMAC",
+                    KrcmPart = "utKrcmPart",
+                    KrcmSerial = "utKrcmSerial",
+                    McrcmPart = "utMrcrmPart",
+                    McrcmSerial = "UTMrcrmSerial",
+                    EgrPart = "UTEgrPart",
+                    EgrSerial = "UTEgrSerial",
+                    EgrMfr = "UTEgrMfr",
+                    OimPart = "UTOimPart",
+                    OimSerial = "UTOimSerial",
+                    OimSWVersion = "UTOimSWVersion"
                 }
             };
         }

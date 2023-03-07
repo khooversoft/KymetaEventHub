@@ -1,6 +1,5 @@
 ﻿using Kymeta.Cloud.Commons.Databases.Redis;
 using Kymeta.Cloud.Services.EnterpriseBroker.Models.Salesforce.External;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -478,7 +477,7 @@ public class SalesforceClient : ISalesforceClient
         var url = _redis.StringGet<string>("EB:SFApiRoot");
 
         // authenticate
-        if (/*true ||*/ string.IsNullOrEmpty(token))
+        if (string.IsNullOrEmpty(token))
         {
             var authObject = await Authenticate();
             if (authObject != null)
