@@ -20,9 +20,9 @@ public class H1_CreateHardwareInvoiceActivity : AsyncTaskActivity<Event_InvoiceC
     private readonly SalesforceClient2 _salesforceClient;
 
     public H1_CreateHardwareInvoiceActivity(
-        SalesforceClient2 salesforceClient, 
-        OracleClient oracleClient, 
-        ITransactionLoggingService transLog, 
+        SalesforceClient2 salesforceClient,
+        OracleClient oracleClient,
+        ITransactionLoggingService transLog,
         ILogger<H1_CreateHardwareInvoiceActivity> logger
         )
     {
@@ -39,17 +39,8 @@ public class H1_CreateHardwareInvoiceActivity : AsyncTaskActivity<Event_InvoiceC
         using var ls = _logger.LogEntryExit(message: $"InstanceId={context.OrchestrationInstance.InstanceId}");
         _transLog.Add(this.GetMethodName(), context.OrchestrationInstance.InstanceId, input);
 
-        await RunOracleIntegrationJob(input);
- 
-        return true;
-    }
-
-    private async Task RunOracleIntegrationJob(Event_InvoiceCreateModel input)
-    {
-        using var lc = _logger.LogEntryExit();
-
         var list = new[]
-{
+    {
             "300000001130195",  // May be an environment specific value (configuration)
             "Distributed Order Orchestration",
             input.NEO_Posted_Date__c.ToString("yyyy-MM-dd"),
@@ -66,5 +57,7 @@ public class H1_CreateHardwareInvoiceActivity : AsyncTaskActivity<Event_InvoiceC
 
         var response = await _oracleClient.Integration.PostRequest(request);
         _logger.LogInformation("Posting to Oracle integration");
+
+        return true;
     }
 }

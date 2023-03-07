@@ -11,12 +11,14 @@ using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Activities;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activities;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.ShippingReport;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.Extensions.Http;
+using StackExchange.Redis;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk;
 
@@ -50,12 +52,16 @@ public static class Startup
             //builder.AddTaskActivities<Step2_GetSalesOrderLinesActivity>();
             //builder.AddTaskActivities<Step4_UpdateSalesforceSalesOrderActivity>();
             //builder.AddTaskActivities<Step3_SetOracleSalesOrderActivity>(); 
-            
+
             builder.AddTaskOrchestrations<InvoiceCreateOrchestration>();
             builder.AddTaskActivities<H1_CreateHardwareInvoiceActivity>();
             builder.AddTaskActivities<H2_ScanOracleAndUpdateInvoiceActivity>();
             builder.AddTaskActivities<Step1_GetInvoiceLineItemsActivity>();
             builder.AddTaskActivities<Step2_CreateOtherInvoiceActivity>();
+
+            builder.AddTaskOrchestrations<ShippingReportOrchestration>();
+            builder.AddTaskActivities<S1_GetReportActivity>();
+            builder.AddTaskActivities<S2_UpdateSalesOrderActivity>();
 
             builder.AddTaskOrchestrations<TestOrchestration>();
             builder.AddTaskActivities<Step2_TestActivity>();
@@ -68,6 +74,7 @@ public static class Startup
 
                 //map.Map<SalesOrderOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoApproveOrder);
                 map.Map<InvoiceCreateOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoInvoicePosted);
+                map.Map<ShippingReportOrchestration>("oracleReport");
                 map.Map<TestOrchestration>("testChannel");
             });
         });
@@ -123,6 +130,21 @@ public static class Startup
             httpClient.BaseAddress = new Uri(basePath);
         })
         .AddPolicyHandler(_retryPolicy)
+        .AddHttpMessageHandler<TransactionLoggerHandler>();
+
+        services.AddHttpClient<OracleReportApi>((services, httpClient) =>
+        {
+            var option = services.GetRequiredService<ServiceOption>();
+
+            string basicAuth = $"{option.Oracle.Username}:{option.Oracle.Password}"
+                .StringToBytes()
+                .Func(Convert.ToBase64String);
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicAuth);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/soap+xml");
+            httpClient.BaseAddress = new Uri(option.Oracle.Endpoint);
+        })
+        //.AddPolicyHandler(_retryPolicy)
         .AddHttpMessageHandler<TransactionLoggerHandler>();
 
         services.AddHttpClient<SalesforceClient2>((services, httpClient) =>

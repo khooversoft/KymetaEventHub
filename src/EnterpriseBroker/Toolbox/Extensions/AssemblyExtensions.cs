@@ -10,7 +10,7 @@ namespace Kymeta.Cloud.Services.Toolbox.Extensions;
 
 public static class AssemblyExtensions
 {
-    public static string ReadAssemblyResource(this Assembly subject, string resourcePath)
+    public static string ReadAssemblyResource(this Assembly? subject, string resourcePath)
     {
         using var stream = subject
             .GetManifestResourceStream(resourcePath)

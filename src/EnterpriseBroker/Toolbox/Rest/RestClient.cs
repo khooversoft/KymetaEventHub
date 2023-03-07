@@ -2,6 +2,7 @@
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Retry;
@@ -16,6 +17,8 @@ namespace Kymeta.Cloud.Services.Toolbox.Rest;
 /// </summary>
 public class RestClient
 {
+    private const string _jsonContentType = "application/json";
+    private const string _xmlContentType = "application/soap+xml";
     private readonly HttpClient _client = null!;
 
     public RestClient(HttpClient client) => _client = client.NotNull();
@@ -30,6 +33,7 @@ public class RestClient
     public string? Path { get; private set; }
 
     public object? Content { get; private set; }
+    public bool IsXml { get; private set; }
 
     public ILogger? Logger { get; private set; }
     public bool EnsureSuccessStatusCode { get; private set; } = true;
@@ -38,17 +42,20 @@ public class RestClient
     {
         Path = null;
         Content = null;
+        IsXml = false;
 
         return this;
     }
 
     public RestClient SetPath(string path) => this.Action(x => x.Path = path);
     public RestClient SetContent(HttpContent content) => this.Action(x => Content = content);
-    public RestClient SetContent<T>(T value, bool required = true)
+    public RestClient SetContent<T>(T value, bool required = true, bool isXml = false)
     {
         if (required) value.NotNull();
 
         Content = value;
+        IsXml = isXml;
+
         return this;
     }
 
@@ -96,7 +103,9 @@ public class RestClient
             null => null,
             HttpContent v => v,
 
-            var v => new StringContent(Json.Default.SerializePascal(v), Encoding.UTF8, "application/json")
+            string v when IsXml => new StringContent(v, Encoding.UTF8, _xmlContentType),
+            string v => throw new ArgumentException("string is not valid content"),
+            var v => new StringContent(Json.Default.SerializePascal(v), Encoding.UTF8, _jsonContentType),
         },
     };
 

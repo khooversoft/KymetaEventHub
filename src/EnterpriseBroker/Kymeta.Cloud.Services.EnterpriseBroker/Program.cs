@@ -210,6 +210,7 @@ builder.Services.AddHttpLogging(options =>
                             HttpLoggingFields.ResponseBody;
 });
 
+
 // END: ConfigureServices
 
 // START: Configure

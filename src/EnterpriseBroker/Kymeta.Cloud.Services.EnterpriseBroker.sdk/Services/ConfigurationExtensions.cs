@@ -20,9 +20,11 @@ public static class ConfigurationExtensions
         serviceCollection.AddTransient<MessageChannelListener>();
         serviceCollection.AddSingleton<MessageListenerService>();
         serviceCollection.AddSingleton<OrchestrationService>();
+        serviceCollection.AddSingleton<OracleReportService>();
 
         serviceCollection.AddHostedService<BackgroundHost<OrchestrationService>>();
         serviceCollection.AddHostedService<BackgroundHost<MessageListenerService>>();
+        serviceCollection.AddHostedService<BackgroundHost<OracleReportService>>();
 
         builder.TaskOrchestrations.ForEach(x => serviceCollection.AddSingleton(x));
         builder.TaskActivities.ForEach(x => serviceCollection.AddSingleton(x));

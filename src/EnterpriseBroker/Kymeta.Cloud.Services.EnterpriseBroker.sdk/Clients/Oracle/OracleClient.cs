@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
-using Kymeta.Cloud.Services.Toolbox.Tools;
+﻿using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Oracle;
 
 public class OracleClient
 {
-    private readonly Guid _instanceId = Guid.NewGuid();
-
     public OracleClient(HttpClient client, ILoggerFactory loggerFactory)
     {
         client.NotNull();

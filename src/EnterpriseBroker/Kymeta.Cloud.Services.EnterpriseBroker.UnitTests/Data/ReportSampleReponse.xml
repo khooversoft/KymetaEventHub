@@ -1,0 +1,14 @@
+﻿<env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+    <env:Header/>
+    <env:Body>
+        <ns2:runReportResponse xmlns:ns2="http://xmlns.oracle.com/oxp/service/PublicReportService">
+            <ns2:runReportReturn>
+                <ns2:reportBytes>77u/REFURTEsU09VUkNFX09SREVSX05VTUJFUixGVUxGSUxMRURfUVRZLFNPVVJDRV9MSU5FX05VTUJFUixGVUxGSUxMX0xJTkVfSUQsRlVMRklMTF9MSU5FX05VTUJFUixTSElQUEVEX0RBVEVfQU5EX1RJTUUsU1BMSVRfRlJPTV9GTElORV9JRAoyMDIzLTAyLTE0VDE2OjAwOjAwLjAwMC0wODowMCwwMDAxOTksNCwwMDAwMDA3MTM1LDMwMDAwMDExMzQ5NjUyMSwxLDIwMjMtMDItMTVUMTc6MTA6MzQuMDAwKzAwOjAwLAoyMDIzLTAyLTE0VDE2OjAwOjAwLjAwMC0wODowMCwyODY0NTcsMSwxLDMwMDAwMDExMzQ5ODIxOSwxLDIwMjMtMDItMTVUMDU6MTY6MzMuMDAwKzAwOjAwLAoyMDIzLTAyLTE0VDE2OjAwOjAwLjAwMC0wODowMCwyODY0NTcsMSwxLDMwMDAwMDExMzQ5Njg2NCwyLDIwMjMtMDItMTVUMDU6NTg6MjMuMDAwKzAwOjAwLDMwMDAwMDExMzQ5ODIxOQo=</ns2:reportBytes>
+                <ns2:reportContentType>text/plain;charset=UTF-8</ns2:reportContentType>
+                <ns2:reportFileID xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+                <ns2:reportLocale xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+                <ns2:metaDataList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+            </ns2:runReportReturn>
+        </ns2:runReportResponse>
+    </env:Body>
+</env:Envelope>

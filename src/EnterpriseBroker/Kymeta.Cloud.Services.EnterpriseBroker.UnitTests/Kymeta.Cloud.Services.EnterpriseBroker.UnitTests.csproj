@@ -10,11 +10,15 @@
   <ItemGroup>
     <None Remove="Data\InvoiceEventHardware.json" />
     <None Remove="Data\InvoiceEventOther.json" />
+    <None Remove="Data\ReportCsv.txt" />
+    <None Remove="TestFiles\ReportSampleReponse.xml" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Data\InvoiceEventHardware.json" />
     <EmbeddedResource Include="Data\InvoiceEventOther.json" />
+    <EmbeddedResource Include="Data\ReportCsv.txt" />
+    <EmbeddedResource Include="Data\ReportSampleReponse.xml" />
   </ItemGroup>
 
   <ItemGroup>
