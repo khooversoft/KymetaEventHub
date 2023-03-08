@@ -3,7 +3,6 @@ using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Activities;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Model;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
@@ -13,8 +12,8 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate;
 public class InvoiceCreateOrchestration : TaskOrchestration<bool, string>
 {
     private readonly ITransactionLoggingService _transLog;
-    private readonly ILogger<TestOrchestration> _logger;
-    public InvoiceCreateOrchestration(ITransactionLoggingService transLog, ILogger<TestOrchestration> logger)
+    private readonly ILogger<InvoiceCreateOrchestration> _logger;
+    public InvoiceCreateOrchestration(ITransactionLoggingService transLog, ILogger<InvoiceCreateOrchestration> logger)
     {
         _transLog = transLog.NotNull();
         _logger = logger.NotNull();

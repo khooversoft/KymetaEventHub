@@ -32,8 +32,8 @@ public class S1_GetReportActivity : AsyncTaskActivity<string, ReportRequestRespo
         using var ls = _logger.LogEntryExit(message: $"InstanceId={context.OrchestrationInstance.InstanceId}");
         _transLog.Add(this.GetMethodName(), context.OrchestrationInstance.InstanceId, input);
 
-        DateTime date1 = DateTime.UtcNow.AddDays(-1);
-        //DateTime date1 = DateTime.Parse("02-15-2023");
+        //DateTime date1 = DateTime.UtcNow.AddDays(-2);
+        DateTime date1 = DateTime.Parse("02-15-2023");
 
         _logger.LogInformation("Getting report for shipped from Oracle");
         ReportRequestResponse report = await _reportClient.Get(date1);

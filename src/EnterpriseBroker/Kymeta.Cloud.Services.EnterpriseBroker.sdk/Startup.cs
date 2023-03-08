@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Application;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Oracle;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
@@ -9,16 +8,12 @@ using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Activities;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder.Activities;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.ShippingReport;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using Polly;
 using Polly.Extensions.Http;
-using StackExchange.Redis;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk;
 
@@ -63,11 +58,6 @@ public static class Startup
             builder.AddTaskActivities<S1_GetReportActivity>();
             builder.AddTaskActivities<S2_UpdateSalesOrderActivity>();
 
-            builder.AddTaskOrchestrations<TestOrchestration>();
-            builder.AddTaskActivities<Step2_TestActivity>();
-            builder.AddTaskActivities<Step3_TestActivity>();
-            builder.AddTaskActivities<Step4_TestActivity>();
-
             builder.MapChannel((services, map) =>
             {
                 ServiceOption option = services.GetRequiredService<ServiceOption>();
@@ -75,7 +65,6 @@ public static class Startup
                 //map.Map<SalesOrderOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoApproveOrder);
                 map.Map<InvoiceCreateOrchestration>(option.Salesforce.PlatformEvents.Channels.NeoInvoicePosted);
                 map.Map<ShippingReportOrchestration>("oracleReport");
-                map.Map<TestOrchestration>("testChannel");
             });
         });
 
@@ -144,7 +133,7 @@ public static class Startup
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/soap+xml");
             httpClient.BaseAddress = new Uri(option.Oracle.Endpoint);
         })
-        //.AddPolicyHandler(_retryPolicy)
+        .AddPolicyHandler(_retryPolicy)
         .AddHttpMessageHandler<TransactionLoggerHandler>();
 
         services.AddHttpClient<SalesforceClient2>((services, httpClient) =>

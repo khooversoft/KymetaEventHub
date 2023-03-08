@@ -1,0 +1,43 @@
+{
+  "data": {
+    "schema": "YU4BvjZwNj7UJ_Ew-_bNpQ",
+    "payload": {
+      "NEO_Oracle_Bill_to_Address_ID__c": "536015",
+      "NEO_Id__c": "80163000002nIxLAAU",
+      "NEO_Preferred_Contact_Method__c": "Email",
+      "NEO_Account_Name__c": "Intelsat US LLC",
+      "NEO_Ship_to_Name__c": "Intelsat US LLC",
+      "NEO_Requested_Ship_Date__c": null,
+      "NEO_Deleted_Item_Id__c": null,
+      "CreatedById": "0056300000EdVN2AAN",
+      "NEO_Internal_Company__c": "KyCorp",
+      "NEO_Event_Type__c": "Upsert",
+      "NEO_Sales_Representative__c": "",
+      "NEO_Oracle_Ship_to_Address_ID__c": "536015",
+      "NEO_OrderNumber__c": "00001472",
+      "NEO_Oracle_Integration_Status__c": null,
+      "NEO_Oracle_Ship_to_Contact_ID__c": "",
+      "Neo_Oracle_Sync_Status__c": "Submitted",
+      "NEO_PO_Number__c": "3456456",
+      "NEO_Primary_Contact__c": "Intelsat",
+      "NEO_PO_Date__c": "2023-02-01",
+      "NEO_Oracle_SO__c": "",
+      "NEO_Order_Type_Oracle_Sync__c": "Standard",
+      "NEO_ApprovalStatus__c": "Approved",
+      "NEO_Oracle_Account_ID__c": "77001",
+      "NEO_Oracle_Primary_Contact_ID__c": "",
+      "NEO_Order_Status__c": "Draft",
+      "NEO_Currency__c": "USD",
+      "CreatedDate": "2023-03-07T19:52:10.831Z",
+      "NEO_Payment_Term__c": null,
+      "NEO_Oracle_Bill_to_Contact_ID__c": "",
+      "NEO_Bill_To_Name__c": "Intelsat US LLC"
+    },
+    "event": {
+      "EventUuid": "8f19d06d-c882-4960-8d5d-858453346d8d",
+      "replayId": 15190304,
+      "EventApiName": "NEO_Approved_Order__e"
+    }
+  },
+  "channel": "/event/NEO_Approved_Order__e"
+}

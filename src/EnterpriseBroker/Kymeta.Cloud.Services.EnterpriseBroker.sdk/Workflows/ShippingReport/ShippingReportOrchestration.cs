@@ -1,9 +1,6 @@
 ﻿using DurableTask.Core;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Invoice;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Salesforce;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Services.TransactionLog;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate.Activities;
-using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.ShippingReport;
 using Kymeta.Cloud.Services.Toolbox.Extensions;
 using Kymeta.Cloud.Services.Toolbox.Tools;
@@ -14,8 +11,8 @@ namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.InvoiceCreate;
 public class ShippingReportOrchestration : TaskOrchestration<bool, string>
 {
     private readonly ITransactionLoggingService _transLog;
-    private readonly ILogger<TestOrchestration> _logger;
-    public ShippingReportOrchestration(ITransactionLoggingService transLog, ILogger<TestOrchestration> logger)
+    private readonly ILogger<ShippingReportOrchestration> _logger;
+    public ShippingReportOrchestration(ITransactionLoggingService transLog, ILogger<ShippingReportOrchestration> logger)
     {
         _transLog = transLog.NotNull();
         _logger = logger.NotNull();

@@ -1,0 +1,45 @@
+﻿{
+  "SourceTransactionNumber": "0001999014", // SalesforceOrderItemModel.Id
+  "SourceTransactionId": "0001999014", // SalesforceOrderItemModel.Id
+  "OrderKey": "OPS:0001999014", // "OPS:" + SalesforceOrderItemModel.OrderItemNumber
+  "SourceTransactionSystem": "OPS", // SalesforceOrderItemModel.OrderItemNumber
+  "BusinessUnitName": "Kymeta Corporation BU",  // Hardcode?
+  "BuyingPartyName": "Intelsat US LLC",
+  "TransactionType": "Standard Orders",
+  "RequestedShipDate": "2023-10-19T20:49:12+00:00",
+  "PaymentTerms": "Net 30",
+  "TransactionalCurrencyCode": "USD",
+  "RequestingBusinessUnitName": "Kymeta Corporation BU",
+  "FreezePriceFlag": false,
+  "FreezeShippingChargeFlag": false,
+  "FreezeTaxFlag": false,
+  "SubmittedFlag": true,
+  "SourceTransactionRevisionNumber": 1,
+  "Comments": "testing upsert",
+  "lines": [
+    {
+      "SourceTransactionLineId": "80219000003QgpjAAC122", //order product id
+      "SourceTransactionLineNumber": "0000007135", //order prouct number
+      "SourceTransactionScheduleId": "80219000003QgpjAAC122", //same as source trnsaction id
+      "SourceScheduleNumber": "0000007135", //same as the order product id 
+      "TransactionCategoryCode": "ORDER", //hardcoded
+      "TransactionLineType": "Buy", //hardcoded
+      "ProductNumber": "U8911-11113-0", //product code from salesforce
+      "OrderedQuantity": 10.0,
+      "OrderedUOM": "EA", //hard coded,
+      "manualPriceAdjustments": [
+        {
+          "Reason": "Sales negotiation", // hardcoded
+          "AdjustmentAmount": 11300.0,
+          "AdjustmentType": "Price override", //hard coded
+          "ChargeDefinition": "Sale Price", //hard coded
+          "AdjustmentElementBasisName": "Your Price", //hard coded
+          "ChargeRollupFlag": false,
+          "Comments": "salesforce CPQ driven pricing", // hardcoded
+          "SourceManualPriceAdjustmentId": "80219000003QgpjAAC" //mapped to the order product id
+        }
+      ]
+    }
+  ]
+}
+

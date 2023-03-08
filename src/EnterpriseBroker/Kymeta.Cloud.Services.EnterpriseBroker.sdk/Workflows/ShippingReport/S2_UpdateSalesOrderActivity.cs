@@ -46,7 +46,7 @@ internal class S2_UpdateSalesOrderActivity : AsyncTaskActivity<ReportRequestResp
                 Actual_Ship_Date__c = x.First().ShippedDateAndTime,
                 NEO_Shipped_Quantity__c = x.Sum(y => y.FulfilledQuantity),
                 NEO_Oracle_Back_Order_Fulfillment_Id__c = x.First().SplitFromFLineId,
-                NEO_Oracle_Tracking_Number__c = x.Select(y => y.SplitFromFLineId).Join(",").Truncate(255),
+                //NEO_Oracle_Tracking_Number__c = x.Select(y => y.TrackingNumber).Join(",").Truncate(255),
 
             }))
             .ToArray();
@@ -55,7 +55,7 @@ internal class S2_UpdateSalesOrderActivity : AsyncTaskActivity<ReportRequestResp
 
         foreach (var item in summerize)
         {
-            SalesforceSearchResult<FullmentSearchResult> search = await _salesForceClient.SalesOrder.Search(item.FulfillLineId);
+            SalesforceSearchResult<FullmentSearchResult> search = await _salesForceClient.SalesOrder.SearchFByFulfillment(item.FulfillLineId);
             if (search.Records.Count == 0)
             {
                 _logger.LogError("Cannot find backorder fulfillment id={id}", item.FulfillLineId);

@@ -2,9 +2,11 @@
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Salesforce;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.SalesOrders;
 using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Models.Shipping;
+using Kymeta.Cloud.Services.EnterpriseBroker.sdk.Workflows.SalesOrder2.Model;
 using Kymeta.Cloud.Services.Toolbox.Rest;
 using Kymeta.Cloud.Services.Toolbox.Tools;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 
 namespace Kymeta.Cloud.Services.EnterpriseBroker.sdk.Clients.Salesforce;
 
@@ -27,7 +29,7 @@ public class SalesforceSalesOrderApi
         return new[] { new OrderProduct() };
     }
 
-    public async Task<SalesforceSearchResult<FullmentSearchResult>> Search(string fulfillmentId, CancellationToken token = default) => await new RestClient(_client)
+    public async Task<SalesforceSearchResult<FullmentSearchResult>> SearchFByFulfillment(string fulfillmentId, CancellationToken token = default) => await new RestClient(_client)
         .SetPath($"query?q=select Id from orderItem where NEO_Oracle_Fulfillment_Id__c = '{fulfillmentId}' LIMIT 150")
         .SetLogger(_logger)
         .GetAsync(token)
@@ -38,4 +40,11 @@ public class SalesforceSalesOrderApi
         .SetLogger(_logger)
         .SetContent(updateProductModel)
         .PatchAsync(token);
+
+    public async Task<SalesforceSearchResult<SalesforceOrderItemModel>> SearchByOrderIdForSyncToOracle(string orderId, CancellationToken token = default) => await new RestClient(_client)
+        .SetPath($"query?q=select FIELDS(ALL) from OrderItem where OrderId = '{orderId}' and NEO_Sync_to_Oracle__c=false LIMIT 200")
+        .SetLogger(_logger)
+        .GetAsync(token)
+        .GetRequiredContent<SalesforceSearchResult<SalesforceOrderItemModel>>();
+
 }

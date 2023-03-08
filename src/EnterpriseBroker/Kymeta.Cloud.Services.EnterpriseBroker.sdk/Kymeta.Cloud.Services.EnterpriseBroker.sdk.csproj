@@ -31,4 +31,8 @@
         <ProjectReference Include="..\Toolbox\Toolbox.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\SalesOrders2\" />
+    </ItemGroup>
+
 </Project>
